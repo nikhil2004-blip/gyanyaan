@@ -45,10 +45,10 @@ function RotatingEarth({ onColorChange, chaosMode }) {
   const [chaosTransform, setChaosTransform] = useState({ x: 0, y: 0, z: 0 });
 
   const [moon, mars, jupiter, venus] = useLoader(THREE.TextureLoader, [
-    "/assets/planets/moon.jpg",
-    "/assets/planets/mars.jpg",
-    "/assets/planets/jupyter.jpg",
-    "/assets/planets/venus.jpg"
+    "http://localhost:3000/assets/planets/moon.jpg",
+    "http://localhost:3000/assets/planets/mars.jpg",
+    "http://localhost:3000/assets/planets/jupyter.jpg",
+    "http://localhost:3000/assets/planets/venus.jpg"
   ]);
 
   const textures = useMemo(() => [moon, mars, jupiter, venus], [moon, mars, jupiter, venus]);

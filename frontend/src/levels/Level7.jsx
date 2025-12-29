@@ -23,6 +23,7 @@ import {
   AlertOctagon,
   ArrowLeft
 } from "lucide-react";
+import StarryBackground from "../components/ui/StarryBackground";
 
 // --- MRD & CONFIGURATION ---
 const MRD_CONTENT = {
@@ -533,7 +534,8 @@ export default function Level7MOI({ onBack, onNextLevel }) {
   const successWidth = maxVelPct - minVelPct;
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-slate-200 font-sans p-2 sm:p-4 select-none flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-transparent text-slate-200 font-sans p-2 sm:p-4 select-none flex flex-col items-center justify-center relative">
+      <StarryBackground />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         .font-pixel { font-family: 'Press Start 2P', monospace; }
@@ -759,15 +761,14 @@ export default function Level7MOI({ onBack, onNextLevel }) {
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 w-full text-center">
               <div
                 className={`inline-block px-6 py-3 font-pixel text-xs border-2 shadow-lg backdrop-blur-md rounded
-                        ${
-                          phase === "failed"
-                            ? "bg-red-900/90 border-red-500 text-white"
-                            : phase === "success"
-                              ? "bg-green-900/90 border-green-500 text-white"
-                              : isBurningUI
-                                ? "bg-amber-900/90 border-amber-500 text-white animate-pulse"
-                                : "bg-slate-900/90 border-blue-500 text-blue-300"
-                        }
+                        ${phase === "failed"
+                    ? "bg-red-900/90 border-red-500 text-white"
+                    : phase === "success"
+                      ? "bg-green-900/90 border-green-500 text-white"
+                      : isBurningUI
+                        ? "bg-amber-900/90 border-amber-500 text-white animate-pulse"
+                        : "bg-slate-900/90 border-blue-500 text-blue-300"
+                  }
                     `}
               >
                 {gameState.message}

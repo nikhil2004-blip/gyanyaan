@@ -20,6 +20,7 @@ import {
   Info,
   BookOpen
 } from "lucide-react";
+import StarryBackground from "../components/ui/StarryBackground";
 
 // --- Constants & Config ---
 const TARGET_DISTANCE = 100; // Arbitrary units for Mars
@@ -234,10 +235,9 @@ const ItemSlot = ({ icon: Icon, label, isActive, onClick, error }) => (
     onClick={onClick}
     className={`
       group relative w-full aspect-square border-4 cursor-pointer transition-all flex flex-col items-center justify-center select-none overflow-hidden
-      ${
-        isActive
-          ? "bg-blue-900/40 border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.4)]"
-          : "bg-slate-800 border-slate-600 hover:border-slate-400 hover:bg-slate-700"
+      ${isActive
+        ? "bg-blue-900/40 border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.4)]"
+        : "bg-slate-800 border-slate-600 hover:border-slate-400 hover:bg-slate-700"
       }
       ${error ? "border-red-500 animate-pulse" : ""}
     `}
@@ -551,7 +551,8 @@ export default function RocketAssembly({ onNextLevel, onBack }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans flex flex-col items-center p-2 sm:p-4 select-none">
+    <div className="min-h-screen bg-transparent text-slate-200 font-sans flex flex-col items-center p-2 sm:p-4 select-none relative">
+      <StarryBackground />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         .font-pixel { font-family: 'Press Start 2P', monospace; }
@@ -743,7 +744,7 @@ export default function RocketAssembly({ onNextLevel, onBack }) {
 
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT: VISUALS (5 Cols) */}
-        <div className="lg:col-span-5 bg-slate-900 border-4 border-slate-700 rounded-sm relative h-[550px] flex flex-col shadow-2xl overflow-hidden">
+        <div className="lg:col-span-5 bg-slate-900 border-4 border-slate-700 rounded-sm relative h-[50vh] min-h-[400px] lg:h-[550px] flex flex-col shadow-2xl overflow-hidden">
           <div className="absolute top-0 left-0 bg-slate-800 text-slate-400 text-[10px] font-pixel px-3 py-1 z-20 border-br-4 border-slate-700">
             ASSEMBLY BAY 01
           </div>
@@ -784,11 +785,10 @@ export default function RocketAssembly({ onNextLevel, onBack }) {
               <div
                 onClick={() => toggleItem("fairing")}
                 className={`mt-2 w-full py-3 border-2 cursor-pointer flex items-center justify-center gap-3 transition-all
-                        ${
-                          items.fairing
-                            ? "bg-slate-800 border-slate-500 shadow-inner"
-                            : "bg-slate-900 border-dashed border-slate-600 hover:bg-slate-800"
-                        }
+                        ${items.fairing
+                    ? "bg-slate-800 border-slate-500 shadow-inner"
+                    : "bg-slate-900 border-dashed border-slate-600 hover:bg-slate-800"
+                  }
                     `}
               >
                 <Lock size={16} className={items.fairing ? "text-white" : "text-slate-600"} />
@@ -850,7 +850,7 @@ export default function RocketAssembly({ onNextLevel, onBack }) {
           </div>
 
           {/* Bottom Row: Config & Launch */}
-          <div className="bg-slate-900 border-4 border-slate-700 p-4 flex-1 flex flex-col gap-4 shadow-lg">
+          <div className="bg-slate-900 border-4 border-slate-700 p-4 flex flex-col gap-4 shadow-lg">
             <div className="text-[10px] font-pixel text-blue-300">LAUNCH CONFIGURATION</div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

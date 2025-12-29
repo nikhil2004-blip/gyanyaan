@@ -19,6 +19,7 @@ import {
   Lightbulb,
   AlertOctagon // Added icons
 } from "lucide-react";
+import StarryBackground from "../components/ui/StarryBackground";
 // import SuccessModal from '../components/ui/SuccessModal'; // Removed as we are using internal Modal
 
 // --- SHARED STYLES & CONSTANTS ---
@@ -466,7 +467,8 @@ export default function Level3OrbitInjection({ onBack, onNextLevel }) {
   const targetCx = 200 - targetC;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans flex flex-col items-center p-2 sm:p-4 selection:bg-green-500 selection:text-black select-none">
+    <div className="min-h-screen bg-transparent text-slate-200 font-sans flex flex-col items-center p-2 sm:p-4 selection:bg-green-500 selection:text-black select-none relative">
+      <StarryBackground />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         .font-pixel { font-family: 'Press Start 2P', monospace; }

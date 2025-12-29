@@ -99,12 +99,11 @@ const MapNode = ({ level, onClick, delay, isComplete, onViewSummary }) => {
             whileTap={{ scale: !level.locked ? 0.95 : 1 }}
             className={`
               w-64 h-80 bg-slate-900/90 border-4 relative overflow-hidden flex flex-col items-center justify-start pt-6 gap-6 p-4
-              ${
-                level.locked
-                  ? "border-gray-700 opacity-70 shadow-[0_0_20px_rgba(0,0,0,0.5)]"
-                  : isComplete
-                    ? "border-green-500 box-glow-hover shadow-[0_0_40px_rgba(34,197,94,0.4)]"
-                    : "border-neonBlue box-glow-hover shadow-[0_0_40px_rgba(0,240,255,0.3)]"
+              ${level.locked
+                ? "border-gray-700 opacity-70 shadow-[0_0_20px_rgba(0,0,0,0.5)]"
+                : isComplete
+                  ? "border-green-500 box-glow-hover shadow-[0_0_40px_rgba(34,197,94,0.4)]"
+                  : "border-neonBlue box-glow-hover shadow-[0_0_40px_rgba(0,240,255,0.3)]"
               }
               transition-all duration-300
             `}
@@ -134,10 +133,9 @@ const MapNode = ({ level, onClick, delay, isComplete, onViewSummary }) => {
             {/* Planet */}
             <div
               className={`w-36 h-36 rounded-full relative overflow-hidden border-4 shrink-0 shadow-2xl
-                ${
-                  level.locked
-                    ? "grayscale brightness-50 border-gray-600"
-                    : `border-white/20 ${level.shadow}`
+                ${level.locked
+                  ? "grayscale brightness-50 border-gray-600"
+                  : `border-white/20 ${level.shadow}`
                 } ${level.visual}`}
             >
               <div className="absolute inset-0 rounded-full shadow-[inset_-10px_-10px_20px_rgba(0,0,0,0.8),inset_5px_5px_10px_rgba(255,255,255,0.2)]"></div>
@@ -150,13 +148,12 @@ const MapNode = ({ level, onClick, delay, isComplete, onViewSummary }) => {
             {/* Card Content */}
             <div className="w-full text-center space-y-4 mt-auto pb-6 relative z-10">
               <div
-                className={`mx-auto px-3 py-2 text-[10px] md:text-xs font-pixel tracking-widest uppercase border-y-2 bg-black/80 backdrop-blur-md shadow-lg ${
-                  level.locked
+                className={`mx-auto px-3 py-2 text-[10px] md:text-xs font-pixel tracking-widest uppercase border-y-2 bg-black/80 backdrop-blur-md shadow-lg ${level.locked
                     ? "border-gray-700 text-gray-500"
                     : isComplete
                       ? "border-green-500 text-green-400"
                       : "border-neonBlue text-neonBlue"
-                }`}
+                  }`}
               >
                 {level.name}
               </div>
@@ -540,44 +537,62 @@ const MissionSelection = ({ onBack, onMissionStart }) => {
       `}</style>
 
       {/* Header */}
-      <div className="relative z-30 px-8 py-8 flex justify-between items-start">
-        <div className="flex items-center space-x-4">
+      <div className="relative z-30 px-4 py-6 md:px-8 md:py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        {/* Profile Button */}
+        <div className="flex items-center w-full md:w-auto justify-between md:justify-start space-x-4 z-20">
           <button
             onClick={() => setShowProfile(true)}
-            className="flex items-center gap-4 bg-slate-900/80 px-6 py-4 rounded-xl border-2 border-white/20 backdrop-blur-md hover:bg-slate-800/90 hover:border-neonBlue transition-all group"
+            className="flex items-center gap-4 bg-slate-900/80 px-4 py-3 md:px-6 md:py-4 rounded-xl border-2 border-white/20 backdrop-blur-md hover:bg-slate-800/90 hover:border-neonBlue transition-all group"
           >
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-tr from-neonBlue to-purple-600 flex items-center justify-center text-lg font-pixel font-bold border-2 border-white/20 group-hover:scale-110 transition-transform shadow-lg">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-tr from-neonBlue to-purple-600 flex items-center justify-center text-sm md:text-lg font-pixel font-bold border-2 border-white/20 group-hover:scale-110 transition-transform shadow-lg">
               {userProfile?.nickname
                 ? userProfile.nickname[0].toUpperCase()
                 : currentUser?.displayName
                   ? currentUser.displayName[0]
                   : "C"}
             </div>
-            <div className="text-left">
-              <p className="text-sm font-pixel text-white leading-none tracking-widest uppercase mb-2 group-hover:text-neonBlue transition-colors">
+            <div className="text-left hidden sm:block">
+              <p className="text-xs md:text-sm font-pixel text-white leading-none tracking-widest uppercase mb-2 group-hover:text-neonBlue transition-colors">
                 {userProfile?.nickname || currentUser?.displayName || "COMMANDER"}
               </p>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <p className="text-[10px] text-gray-400 leading-none font-mono">LEVEL 01 ACCESS</p>
+                <p className="text-[8px] md:text-[10px] text-gray-400 leading-none font-mono">
+                  LEVEL 01 ACCESS
+                </p>
               </div>
             </div>
           </button>
+
+          {/* Mobile Logout (visible only on small screens next to profile) */}
+          <div className="md:hidden">
+            <TechButton
+              variant="danger"
+              onClick={handleLogout}
+              className="text-[10px] py-3 px-4 font-pixel border-2"
+            >
+              LOGOUT
+            </TechButton>
+          </div>
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2 top-10">
-          <h1 className="text-3xl md:text-4xl font-pixel tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 text-glow opacity-90 drop-shadow-[0_4px_0_rgba(0,0,0,0.5)]">
+        {/* Title */}
+        <div className="md:absolute md:left-1/2 md:-translate-x-1/2 md:top-10 order-last md:order-none mt-2 md:mt-0">
+          <h1 className="text-2xl md:text-4xl font-pixel tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 text-glow opacity-90 drop-shadow-[0_4px_0_rgba(0,0,0,0.5)] text-center">
             MISSION MAP
           </h1>
         </div>
 
-        <TechButton
-          variant="danger"
-          onClick={handleLogout}
-          className="ml-4 text-xs py-4 px-8 font-pixel border-2"
-        >
-          LOGOUT
-        </TechButton>
+        {/* Desktop Logout */}
+        <div className="hidden md:block z-20">
+          <TechButton
+            variant="danger"
+            onClick={handleLogout}
+            className="ml-4 text-xs py-4 px-8 font-pixel border-2"
+          >
+            LOGOUT
+          </TechButton>
+        </div>
       </div>
 
       {/* Map Area */}

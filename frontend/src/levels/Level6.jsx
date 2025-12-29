@@ -23,6 +23,7 @@ import {
   Lightbulb,
   AlertOctagon // Added icons
 } from "lucide-react";
+import StarryBackground from "../components/ui/StarryBackground";
 
 // --- SHARED STYLES ---
 const PIXEL_FONT = "font-pixel";
@@ -787,7 +788,8 @@ export default function Level6MarsTransfer({ onBack, onNextLevel }) {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-900 flex items-center justify-center p-2 font-sans select-none relative">
+    <div className="min-h-screen bg-transparent flex items-center justify-center p-2 font-sans select-none relative">
+      <StarryBackground />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         .font-pixel { font-family: 'Press Start 2P', monospace; }

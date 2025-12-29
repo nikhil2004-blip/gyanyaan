@@ -29,6 +29,7 @@ import {
   Lightbulb,
   BookOpen
 } from "lucide-react";
+import StarryBackground from "../components/ui/StarryBackground";
 
 // --- Shared Styles ---
 const PIXEL_FONT = "font-pixel";
@@ -593,7 +594,8 @@ export default function RocketAscentLevel2({ onNextLevel, onBack }) {
   // --- RENDER ---
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans flex flex-col items-center p-2 sm:p-4 select-none">
+    <div className="min-h-screen bg-transparent text-slate-200 font-sans flex flex-col items-center p-2 sm:p-4 select-none relative">
+      <StarryBackground />
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'); .font-pixel { font-family: 'Press Start 2P', monospace; }`}</style>
 
       {/* --- MODALS --- */}
@@ -761,7 +763,7 @@ export default function RocketAscentLevel2({ onNextLevel, onBack }) {
         {/* --- LEFT COLUMN: CAMERAS & MANUAL CONTROL --- */}
         <div className="lg:col-span-7 flex flex-col gap-4">
           {/* VIEWPORT */}
-          <div className="bg-slate-900 border-4 border-slate-600 h-[350px] relative overflow-hidden shadow-2xl rounded-sm group">
+          <div className="bg-slate-900 border-4 border-slate-600 min-h-[300px] h-[40vh] md:h-[350px] relative overflow-hidden shadow-2xl rounded-sm group">
             <div className="absolute top-2 left-2 z-20 bg-black/60 px-2 py-1 border border-slate-500 text-[9px] font-pixel text-green-400 flex items-center gap-2">
               <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span> LIVE CAM
             </div>
@@ -1097,13 +1099,12 @@ export default function RocketAscentLevel2({ onNextLevel, onBack }) {
                           disabled={!isActive}
                           className={`
                                                       flex-1 text-left p-2 border-2 relative overflow-hidden transition-all
-                                                      ${
-                                                        isDone
-                                                          ? "bg-slate-900 border-slate-800 opacity-60"
-                                                          : isActive
-                                                            ? "bg-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.4)] hover:bg-amber-500"
-                                                            : "bg-slate-700 border-slate-600 text-slate-500"
-                                                      }
+                                                      ${isDone
+                              ? "bg-slate-900 border-slate-800 opacity-60"
+                              : isActive
+                                ? "bg-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.4)] hover:bg-amber-500"
+                                : "bg-slate-700 border-slate-600 text-slate-500"
+                            }
                                                     `}
                         >
                           <div className="flex justify-between items-center relative z-10">

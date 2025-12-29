@@ -25,6 +25,7 @@ import {
   Lightbulb,
   AlertOctagon
 } from "lucide-react";
+import StarryBackground from "../components/ui/StarryBackground";
 
 // --- MRD & CONFIGURATION ---
 const MRD_CONTENT = {
@@ -429,7 +430,8 @@ export default function Level8ScienceOps({ onBack, onNextLevel }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans p-2 sm:p-4 select-none flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-transparent text-slate-200 font-sans p-2 sm:p-4 select-none flex flex-col items-center justify-center relative">
+      <StarryBackground />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         .font-pixel { font-family: 'Press Start 2P', monospace; }
@@ -808,11 +810,10 @@ export default function Level8ScienceOps({ onBack, onNextLevel }) {
                     onClick={() => toggleInstrument(key)}
                     className={`
                                     flex-1 py-3 px-4 border-2 flex justify-between items-center transition-all
-                                    ${
-                                      activeInstruments[key]
-                                        ? "bg-purple-900/50 border-purple-500 text-white"
-                                        : "bg-slate-800 border-slate-600 text-slate-500 hover:bg-slate-750"
-                                    }
+                                    ${activeInstruments[key]
+                        ? "bg-purple-900/50 border-purple-500 text-white"
+                        : "bg-slate-800 border-slate-600 text-slate-500 hover:bg-slate-750"
+                      }
                                 `}
                   >
                     <span className="font-pixel text-[10px]">{inst.label}</span>
@@ -847,8 +848,8 @@ export default function Level8ScienceOps({ onBack, onNextLevel }) {
                   -
                   {orientation === "MARS"
                     ? Object.entries(activeInstruments)
-                        .reduce((acc, [k, v]) => acc + (v ? INSTRUMENTS[k].cost : 0), 0)
-                        .toFixed(1)
+                      .reduce((acc, [k, v]) => acc + (v ? INSTRUMENTS[k].cost : 0), 0)
+                      .toFixed(1)
                     : "0.0"}{" "}
                   /tick
                 </span>

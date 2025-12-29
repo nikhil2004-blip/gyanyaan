@@ -18,6 +18,7 @@ import {
   Lightbulb,
   AlertOctagon // Added icons
 } from "lucide-react";
+import StarryBackground from "../components/ui/StarryBackground";
 // import SuccessModal from '../components/ui/SuccessModal'; // Removed
 
 // --- SHARED STYLES ---
@@ -465,7 +466,8 @@ export default function Level4OrbitRaising({ onBack, onNextLevel }) {
   const satY = cy + ry * Math.sin(rads);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans p-2 sm:p-4 select-none flex flex-col items-center">
+    <div className="min-h-screen bg-transparent text-slate-200 font-sans p-2 sm:p-4 select-none flex flex-col items-center relative">
+      <StarryBackground />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         .font-pixel { font-family: 'Press Start 2P', monospace; }
@@ -783,11 +785,10 @@ export default function Level4OrbitRaising({ onBack, onNextLevel }) {
                     // Disabled only if hard-failed or insufficient
                     disabled={failData || isMissionComplete || isInsufficient}
                     className={`p-2 rounded text-xs border-2 transition-all flex flex-col items-center gap-1 relative group
-                                ${
-                                  selectedStrength === key
-                                    ? "bg-yellow-600 border-yellow-300 text-white scale-105 shadow-lg"
-                                    : "bg-slate-800 border-slate-600 text-slate-400 hover:bg-slate-700"
-                                }
+                                ${selectedStrength === key
+                        ? "bg-yellow-600 border-yellow-300 text-white scale-105 shadow-lg"
+                        : "bg-slate-800 border-slate-600 text-slate-400 hover:bg-slate-700"
+                      }
                                 ${isInsufficient ? "opacity-50 cursor-not-allowed border-red-900 bg-slate-900" : ""}
                             `}
                   >
