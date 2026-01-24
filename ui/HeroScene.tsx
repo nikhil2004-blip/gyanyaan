@@ -17,7 +17,7 @@ export default function HeroScene() {
 
                 <Suspense fallback={null}>
                     <Stars
-                        radius={300000000000000}
+                        radius={300}
                         depth={60}
                         count={7000}
                         factor={4}
