@@ -67,14 +67,14 @@ Through **8 challenging levels**, players experience the real physics, engineeri
 
 ### 🔐 Authentication System
 
-- **Google OAuth Integration**: Seamless sign-in with Firebase Authentication
-- **Email OTP Verification**: Additional security layer with one-time password via email
-- **Dual Authentication Options**: Choose Google Sign-In or Email+OTP
-- **Session Management**: Secure user sessions with encrypted storage
+- **Google OAuth Integration**: Secure sign-in utilizing Google APIs
+- **Custom JWT Auth**: Stateless token-based session management
+- **Dual Authentication**: Standard Email/Password options alongside SSO
+- **Express Backend**: Dedicated auth verification via custom Node middleware
 
 ### 📊 Progress Tracking
 
-- **Firebase Firestore Integration**: Cloud-saved progress across devices
+- **MongoDB & Mongoose**: Fast, scalable NoSQL document persistence
 - **Level Unlocking System**: Complete levels to unlock new missions
 - **Mission Completion Status**: Track completed levels with visual indicators
 - **Mission Summary**: View achievements and stats after completion
@@ -175,14 +175,14 @@ Through **8 challenging levels**, players experience the real physics, engineeri
 
 ### Backend
 - **Node.js** - Runtime environment
-- **Express.js** - OTP email server
-- **Nodemailer** - Email service integration
-- **CORS** - Cross-origin resource sharing
+- **Express.js** - API routing and middleware
+- **Mongoose** - MongoDB object modeling
+- **JSON Web Tokens (JWT)** - Stateless authentication
+- **CORS & Helmet** - Security protocols
 
-### Database & Auth
-- **Firebase Authentication** - Google OAuth
-- **Firebase Firestore** - User progress storage
-- **Firebase Hosting** - Static asset hosting
+### Database
+- **MongoDB Atlas** - Cloud NoSQL database cluster
+- **Vite/React Build** - Static assets seamlessly served via robust hosting
 
 ### Deployment
 - **Vercel**
@@ -403,6 +403,44 @@ npm start
 <img width="861" height="780" alt="image" src="https://github.com/user-attachments/assets/e19eb08d-5e12-460f-a2a4-ed992515c50a" />
 
 
+
+---
+
+## 🤝 Open Source & Contributions
+
+Gyanyaan is an open-source project, and we actively welcome contributions from developers, designers, and space enthusiasts! Whether you want to add new missions, design 3D models, fix bugs, or improve the UI/UX, your help is appreciated.
+
+### How to Contribute
+
+1. **Fork the Repository**
+   Click the "Fork" button at the top right of this repository to create your own personal copy.
+
+2. **Clone your Fork**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/gyanyaan.git
+   cd gyanyaan
+   ```
+
+3. **Create a Development Branch**
+   ```bash
+   git checkout -b feature/your-amazing-feature
+   ```
+
+4. **Make your Changes**
+   Follow the Installation guide to run the modern MERN frontend and backend locally to test your code. 
+
+5. **Commit your Changes**
+   ```bash
+   git commit -m "feat: added an amazing new feature"
+   ```
+
+6. **Push to your Fork**
+   ```bash
+   git push origin feature/your-amazing-feature
+   ```
+
+7. **Open a Pull Request**
+   Go to the original Gyanyaan repository, click the `Pull requests` tab, and click `New pull request`. Compare across forks to select your new branch and submit! Provide a clear description of what changed.
 
 ---
 
