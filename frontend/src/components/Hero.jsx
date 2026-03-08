@@ -135,10 +135,21 @@ function RotatingEarth({ onColorChange }) {
 
 const InteractiveLoadingBackground = () => {
   const starsRef = useRef();
+
   useFrame((state, delta) => {
     if (starsRef.current) {
+      // Base rotation
       starsRef.current.rotation.x -= delta * 0.05;
       starsRef.current.rotation.y += delta * 0.02;
+
+      // Interactive mouse parallax
+      // state.pointer x,y go from -1 to 1
+      const targetX = (state.pointer.x * 0.5);
+      const targetY = (state.pointer.y * 0.5);
+
+      // Smoothly interpolate current rotation towards mouse target influence
+      starsRef.current.rotation.x += (targetY - starsRef.current.rotation.x) * 0.05;
+      starsRef.current.rotation.y += (targetX - starsRef.current.rotation.y) * 0.05;
     }
   });
 
