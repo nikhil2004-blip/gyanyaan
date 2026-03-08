@@ -70,7 +70,6 @@ Through **8 challenging levels**, players experience the real physics, engineeri
 
 - **Google OAuth Integration**: Secure sign-in utilizing Google APIs
 - **Custom JWT Auth**: Stateless token-based session management
-- **Dual Authentication**: Standard Email/Password options alongside SSO
 - **Express Backend**: Dedicated auth verification via custom Node middleware
 
 ### 📊 Progress Tracking
@@ -201,39 +200,36 @@ Through **8 challenging levels**, players experience the real physics, engineeri
 
 ### Prerequisites
 - Node.js 18+ and npm
-- Firebase account
-- Gmail account (for OTP functionality)
+- MongoDB Atlas cluster URL
+- Google Cloud Console account (for OAuth Client ID)
 
 ### Clone Repository
 ```bash
-git clone https://github.com/nikhil2004-blip/whack25deploy.git
-cd whack25deploy
+git clone https://github.com/nikhil2004-blip/gyanyaan.git
+cd gyanyaan
 ```
 
 ### Frontend Setup
 ```bash
+cd frontend
+
 # Install dependencies
 npm install
 
 # Create environment file
 cp .env.example .env
 
-# Add Firebase credentials to .env
-VITE_FIREBASE_API_KEY=your_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-VITE_API_URL=http://localhost:3001
+# Add credentials to .env
+VITE_GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
+VITE_API_URL=http://localhost:3000
 
 # Run development server
 npm run dev
 ```
 
-### Backend Setup (OTP Server)
+### Backend Setup
 ```bash
-cd otp-server
+cd backend
 
 # Install dependencies
 npm install
@@ -241,30 +237,15 @@ npm install
 # Create environment file
 cp .env.example .env
 
-# Add Gmail credentials to .env
-PORT=3001
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_gmail_app_password
+# Add credentials to .env
+PORT=3000
 FRONTEND_URL=http://localhost:5173
-SESSION_SECRET=random_secret_key
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_super_secret_jwt_key
 
 # Start server
 npm start
 ```
-
-### Firebase Configuration
-
-1. Create Firebase project at [firebase.google.com](https://firebase.google.com)
-2. Enable Authentication → Google Sign-In
-3. Enable Firestore Database
-4. Add `localhost:5173` to authorized domains
-5. Copy configuration to `.env`
-
-### Gmail App Password
-
-1. Enable 2-Step Verification in Google Account
-2. Generate App Password: [myaccount.google.com/security](https://myaccount.google.com/security)
-3. Use 16-character password in `EMAIL_PASS`
 
 ---
 
@@ -274,21 +255,17 @@ npm start
 
 1. **Import Project**
    - Connect GitHub repository
-   - Select `nikhil2004-blip/whack25deploy`
+   - Select `nikhil2004-blip/gyanyaan`
 
 2. **Configure**
    - Framework: Vite
    - Build Command: `npm run build`
    - Output Directory: `dist`
+   - Root Directory: `frontend`
 
 3. **Environment Variables**
    ```
-   VITE_FIREBASE_API_KEY=...
-   VITE_FIREBASE_AUTH_DOMAIN=...
-   VITE_FIREBASE_PROJECT_ID=...
-   VITE_FIREBASE_STORAGE_BUCKET=...
-   VITE_FIREBASE_MESSAGING_SENDER_ID=...
-   VITE_FIREBASE_APP_ID=...
+   VITE_GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
    VITE_API_URL=https://your-backend.onrender.com
    ```
 
@@ -297,8 +274,8 @@ npm start
 ### Backend (Render)
 
 1. **Create Web Service**
-   - Repository: `nikhil2004-blip/whack25deploy`
-   - Root Directory: `otp-server`
+   - Repository: `nikhil2004-blip/gyanyaan`
+   - Root Directory: `backend`
 
 2. **Configure**
    - Build Command: `npm install`
@@ -306,29 +283,23 @@ npm start
 
 3. **Environment Variables**
    ```
-   PORT=3001
+   PORT=3000
    NODE_ENV=production
-   EMAIL_USER=your@gmail.com
-   EMAIL_PASS=your_app_password
    FRONTEND_URL=https://your-app.vercel.app
-   SESSION_SECRET=random_secret
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_super_secret_jwt_key
    ```
 
 4. **Deploy** - Copy URL and update Vercel `VITE_API_URL`
 
 ### Post-Deployment
 
-1. **Update Firebase**
-   - Add Vercel domain to authorized domains
-   - Example: `your-app.vercel.app`
+1. **Update Google Cloud Console**
+   - Add Vercel domain to authorized domains for your OAuth Client ID
+   - Example: `https://your-app.vercel.app`
 
-2. **Update Render**
-   - Set `FRONTEND_URL` to Vercel URL
-   - Redeploy service
-
-3. **Test**
+2. **Test**
    - Google Sign-In
-   - Email OTP
    - Game progression
    - Progress saving
 
@@ -339,7 +310,7 @@ npm start
 ### Getting Started
 
 1. **Visit**: [https://whack25deploy.vercel.app/]
-2. **Sign In**: Choose Google or Email authentication
+2. **Sign In**: Google authentication
 3. **Select Mission**: Start with Mangalyaan
 4. **Read MRD**: Study the mission briefing
 5. **Play Level**: Complete objectives
