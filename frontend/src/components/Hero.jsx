@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, Suspense, useMemo } from "react";
 import { Canvas, useFrame, useLoader, extend } from "@react-three/fiber";
 import { motion } from "framer-motion";
 import * as THREE from "three";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial, Html } from "@react-three/drei";
 import { Zap } from "lucide-react";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -45,12 +45,18 @@ function RotatingEarth({ onColorChange }) {
   const groupRef = useRef();
   const materialRef = useRef();
 
-  const [moon, mars, jupiter, venus] = useLoader(THREE.TextureLoader, [
-    `${API}/assets/planets/moon.jpg`,
-    `${API}/assets/planets/mars.jpg`,
-    `${API}/assets/planets/jupyter.jpg`,
-    `${API}/assets/planets/venus.jpg`
-  ]);
+  const [moon, mars, jupiter, venus] = useLoader(
+    THREE.TextureLoader,
+    [
+      `${API}/assets/planets/moon.jpg`,
+      `${API}/assets/planets/mars.jpg`,
+      `${API}/assets/planets/jupyter.jpg`,
+      `${API}/assets/planets/venus.jpg`
+    ],
+    (loader) => {
+      loader.setCrossOrigin("anonymous");
+    }
+  );
 
   const textures = useMemo(() => [moon, mars, jupiter, venus], [moon, mars, jupiter, venus]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -146,7 +152,14 @@ const Hero = ({ user, onEnterMission }) => {
         <Canvas>
           <ambientLight intensity={0.8} />
           <directionalLight position={[5, 3, 5]} intensity={3.0} color="#ffffff" />
-          <Suspense fallback={null}>
+          <Suspense fallback={
+            <Html center>
+              <div className="flex flex-col items-center gap-4 text-white">
+                <Zap className="animate-pulse text-neonBlue" size={32} />
+                <span className="font-pixel text-[10px] tracking-widest uppercase">Initializing Telemetry...</span>
+              </div>
+            </Html>
+          }>
             <RotatingEarth onColorChange={setThemeIndex} />
           </Suspense>
         </Canvas>
