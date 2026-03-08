@@ -23,6 +23,27 @@ export function MissionProvider({ children }) {
     const [currentDate, setCurrentDate] = useState(START_DATE);
     const [isActive, setIsActive] = useState(false); // Track if a run is ongoing
 
+    // Live simulation tick when a mission level is active
+    useEffect(() => {
+        let interval;
+        if (isActive) {
+            // Update fuel and time every 1 second
+            interval = setInterval(() => {
+                setFuel((prev) => {
+                    // Burn fuel faster during launch vehicle stages, vastly slower during payload cruise
+                    const burnRate = prev > 1000 ? 25.5 : 0.08;
+                    return Math.max(0, prev - burnRate);
+                });
+
+                setCurrentDate((prev) => {
+                    // Fast-forward time so the clock is obviously ticking (+15 minutes per real second)
+                    return new Date(prev.getTime() + 1000 * 60 * 15);
+                });
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [isActive]);
+
     // Set the mission to appropriate phases based on the level ID to support direct level hopping
     const syncWithLevel = (levelId) => {
         setIsActive(true);
