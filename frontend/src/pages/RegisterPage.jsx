@@ -1,12 +1,8 @@
 import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import StarryBackground from "../components/ui/StarryBackground";
-
-
-import { getAdditionalUserInfo } from "firebase/auth";
-import { auth, db } from "../firebase";
 
 const RegisterPage = () => {
   const { currentUser, signInWithGoogle, saveUserProfile } = useAuth();
@@ -38,20 +34,14 @@ const RegisterPage = () => {
     setError(null);
     try {
       const result = await signInWithGoogle();
-      const { isNewUser } = getAdditionalUserInfo(result);
-
-      if (isNewUser) {
+      if (result.isNewUser) {
         setIsOnboarding(true);
       } else {
         navigate("/missions", { replace: true });
       }
     } catch (err) {
       console.error(err);
-      if (err.code === "auth/popup-closed-by-user") {
-        setError("Authentication cancelled.");
-      } else {
-        setError("Access denied. Signal lost.");
-      }
+      setError("Access denied. Signal lost.");
     } finally {
       setLoading(false);
     }
@@ -62,14 +52,11 @@ const RegisterPage = () => {
     setLoading(true);
     try {
       if (!currentUser) throw new Error("No user found");
-
-      await saveUserProfile(currentUser.uid, {
+      await saveUserProfile({
         nickname: formData.nickname,
         age: formData.age,
         expertise: formData.expertise,
-        joinedAt: new Date().toISOString()
       });
-
       navigate("/missions", { state: { showProfile: true }, replace: true });
     } catch (err) {
       console.error(err);

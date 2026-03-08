@@ -149,10 +149,10 @@ const MapNode = ({ level, onClick, delay, isComplete, onViewSummary }) => {
             <div className="w-full text-center space-y-4 mt-auto pb-6 relative z-10">
               <div
                 className={`mx-auto px-3 py-2 text-[10px] md:text-xs font-pixel tracking-widest uppercase border-y-2 bg-black/80 backdrop-blur-md shadow-lg ${level.locked
-                    ? "border-gray-700 text-gray-500"
-                    : isComplete
-                      ? "border-green-500 text-green-400"
-                      : "border-neonBlue text-neonBlue"
+                  ? "border-gray-700 text-gray-500"
+                  : isComplete
+                    ? "border-green-500 text-green-400"
+                    : "border-neonBlue text-neonBlue"
                   }`}
               >
                 {level.name}
@@ -289,8 +289,8 @@ const ProfileModal = ({ user, profile, onClose }) => {
             <div className="w-full h-full rounded-full bg-gradient-to-tr from-techGreen to-emerald-600 flex items-center justify-center text-3xl font-black text-black">
               {profile?.nickname
                 ? profile.nickname[0].toUpperCase()
-                : user?.displayName
-                  ? user.displayName[0].toUpperCase()
+                : user?.name
+                  ? user.name[0].toUpperCase()
                   : "?"}
             </div>
           </div>
@@ -298,7 +298,7 @@ const ProfileModal = ({ user, profile, onClose }) => {
 
         <div className="px-6 pb-6 text-center">
           <h2 className="text-xl font-black text-white tracking-widest uppercase mb-1">
-            {profile?.nickname || user?.displayName}
+            {profile?.nickname || user?.name}
           </h2>
           <p className="text-neonBlue text-xs font-mono tracking-[0.2em] uppercase mb-4">
             LEVEL 01 ACCESS
@@ -322,7 +322,7 @@ const ProfileModal = ({ user, profile, onClose }) => {
           <div className="text-left text-xs text-gray-400 font-mono space-y-2 mb-6">
             <p className="flex justify-between">
               <span>MEMBERSHIP ID:</span>
-              <span className="text-white font-bold">#{user?.uid.slice(0, 8).toUpperCase()}</span>
+              <span className="text-white font-bold">#{(user?.id || user?._id || '').toString().slice(0, 8).toUpperCase()}</span>
             </p>
             <p className="flex justify-between">
               <span>STATUS:</span>
@@ -446,8 +446,10 @@ const MissionSummaryModal = ({ mission, onClose }) => {
   );
 };
 
-const MissionSelection = ({ onBack, onMissionStart }) => {
-  const { currentUser, userProfile, logout, getLevelProgress } = useAuth();
+const MissionSelection = () => {
+  const { currentUser, logout, getLevelProgress } = useAuth();
+  // All profile data lives in currentUser now (no separate userProfile)
+  const userProfile = currentUser;
   const [selectedMission, setSelectedMission] = useState(null);
   const [showProfile, setShowProfile] = useState(false);
   const [showSummary, setShowSummary] = useState(null);
@@ -488,15 +490,15 @@ const MissionSelection = ({ onBack, onMissionStart }) => {
   }, [location, navigate]);
 
   const handleMissionStart = () => {
-    if (onMissionStart) {
-      onMissionStart(selectedMission);
+    if (selectedMission) {
+      navigate(`/missions/${selectedMission.id}/levels`, { replace: false });
     }
   };
 
   const handleLogout = async () => {
     try {
-      navigate("/", { replace: true });
       await logout();
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Failed to log out", error);
     }
@@ -547,13 +549,13 @@ const MissionSelection = ({ onBack, onMissionStart }) => {
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-tr from-neonBlue to-purple-600 flex items-center justify-center text-sm md:text-lg font-pixel font-bold border-2 border-white/20 group-hover:scale-110 transition-transform shadow-lg">
               {userProfile?.nickname
                 ? userProfile.nickname[0].toUpperCase()
-                : currentUser?.displayName
-                  ? currentUser.displayName[0]
+                : currentUser?.name
+                  ? currentUser.name[0]
                   : "C"}
             </div>
             <div className="text-left hidden sm:block">
               <p className="text-xs md:text-sm font-pixel text-white leading-none tracking-widest uppercase mb-2 group-hover:text-neonBlue transition-colors">
-                {userProfile?.nickname || currentUser?.displayName || "COMMANDER"}
+                {userProfile?.nickname || currentUser?.name || "COMMANDER"}
               </p>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>

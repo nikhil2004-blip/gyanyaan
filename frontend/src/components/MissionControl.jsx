@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import Level1 from "../levels/Level1";
 import Level2 from "../levels/Level2";
 import Level3 from "../levels/Level3";
@@ -7,94 +9,56 @@ import Level5 from "../levels/Level5";
 import Level6 from "../levels/Level6";
 import Level7 from "../levels/Level7";
 import Level8 from "../levels/Level8";
-import LevelSelection from "./LevelSelection";
-import { useAuth } from "../context/AuthContext";
 
-const MissionControl = ({ mission, onBack }) => {
+const LEVEL_COMPONENTS = { 1: Level1, 2: Level2, 3: Level3, 4: Level4, 5: Level5, 6: Level6, 7: Level7, 8: Level8 };
+
+const MissionControl = () => {
+  const { missionId, levelId } = useParams();
+  const navigate = useNavigate();
   const { saveLevelProgress } = useAuth();
-  const [selectedLevel, setSelectedLevel] = useState(null);
 
-  const handleLevelComplete = async (levelId) => {
-    // Save progress to unlock next level
-    await saveLevelProgress(mission?.id || "mangalyaan", levelId);
+  const levelNum = parseInt(levelId, 10);
+  const LevelComponent = LEVEL_COMPONENTS[levelNum];
 
-    // Advance to next level (if not the last level)
-    if (levelId < 8) {
-      setSelectedLevel(levelId + 1);
+  const goToLevelSelect = () => {
+    // If there is history, go back to pop the stack. Otherwise, navigate to the levels page.
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
     } else {
-      // Last level - mission complete! Return to mission screen
-      onBack();
+      navigate(`/missions/${missionId}/levels`);
     }
   };
 
-  const handleBackToLevelSelection = () => {
-    setSelectedLevel(null);
+  const handleLevelComplete = async () => {
+    await saveLevelProgress(missionId, levelNum);
+    if (levelNum < 8) {
+      // replace so back button goes to level-select, not previous level
+      navigate(`/missions/${missionId}/levels/${levelNum + 1}`, { replace: true });
+    } else {
+      // mission complete — back to mission map, clear the level from history
+      navigate("/missions", { replace: true });
+    }
   };
 
-  // Mangalyaan mission - show level selection
-  if ((mission?.id === "mangalyaan" || mission === "MANGALYAAN") && !selectedLevel) {
+  // Unknown level
+  if (!LevelComponent) {
     return (
-      <LevelSelection
-        mission={mission?.id ? mission : { id: "mangalyaan", name: "MARS ORBIT" }}
-        onBack={onBack}
-        onSelectLevel={setSelectedLevel}
-      />
-    );
-  }
-
-  // Render selected level
-  if (selectedLevel === 1) {
-    return (
-      <Level1 onNextLevel={() => handleLevelComplete(1)} onBack={handleBackToLevelSelection} />
-    );
-  }
-  if (selectedLevel === 2) {
-    return (
-      <Level2 onNextLevel={() => handleLevelComplete(2)} onBack={handleBackToLevelSelection} />
-    );
-  }
-  if (selectedLevel === 3) {
-    return (
-      <Level3 onNextLevel={() => handleLevelComplete(3)} onBack={handleBackToLevelSelection} />
-    );
-  }
-  if (selectedLevel === 4) {
-    return (
-      <Level4 onNextLevel={() => handleLevelComplete(4)} onBack={handleBackToLevelSelection} />
-    );
-  }
-  if (selectedLevel === 5) {
-    return (
-      <Level5 onNextLevel={() => handleLevelComplete(5)} onBack={handleBackToLevelSelection} />
-    );
-  }
-  if (selectedLevel === 6) {
-    return (
-      <Level6 onNextLevel={() => handleLevelComplete(6)} onBack={handleBackToLevelSelection} />
-    );
-  }
-  if (selectedLevel === 7) {
-    return (
-      <Level7 onNextLevel={() => handleLevelComplete(7)} onBack={handleBackToLevelSelection} />
-    );
-  }
-  if (selectedLevel === 8) {
-    return (
-      <Level8 onNextLevel={() => handleLevelComplete(8)} onBack={handleBackToLevelSelection} />
-    );
-  }
-
-  // Other missions - locked
-  return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center font-sans">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">MISSION LOCKED</h2>
-        <p className="mb-6">This mission is currently in development.</p>
-        <button onClick={onBack} className="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded">
-          RETURN TO MAP
-        </button>
+      <div className="min-h-screen bg-black text-white flex items-center justify-center font-sans">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold mb-4">LEVEL NOT FOUND</h2>
+          <button onClick={goToLevelSelect} className="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded">
+            ← BACK TO LEVELS
+          </button>
+        </div>
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <LevelComponent
+      onNextLevel={handleLevelComplete}
+      onBack={goToLevelSelect}
+    />
   );
 };
 

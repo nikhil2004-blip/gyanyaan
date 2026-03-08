@@ -1,14 +1,8 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
-import { auth, googleProvider, db } from "../firebase";
-
-// Force account selection every time
-googleProvider.setCustomParameters({
-  prompt: "select_account"
-});
+import { createContext, useContext, useEffect, useState, useRef } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const AuthContext = createContext();
+const API = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -16,111 +10,148 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [progressCache, setProgressCache] = useState({});
 
-  function signInWithGoogle() {
-    return signInWithPopup(auth, googleProvider);
+  // Refs to make the callback-based useGoogleLogin Promise-compatible
+  const resolveRef = useRef(null);
+  const rejectRef = useRef(null);
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  function getToken() {
+    return localStorage.getItem("token");
   }
 
-  function logout() {
-    return signOut(auth);
+  function authHeader() {
+    return { Authorization: `Bearer ${getToken()}` };
   }
 
-  async function saveUserProfile(uid, data) {
-    try {
-      await setDoc(doc(db, "users", uid), data, { merge: true });
-      setUserProfile((prev) => ({ ...prev, ...data }));
-    } catch (error) {
-      console.error("Error saving profile:", error);
-      throw error;
-    }
-  }
-
-  async function getLevelProgress(missionId) {
-    if (!currentUser) return null;
-    try {
-      const progressRef = doc(db, "users", currentUser.uid, "progress", missionId);
-      const progressSnap = await getDoc(progressRef);
-      if (progressSnap.exists()) {
-        return progressSnap.data();
+  // ── Google Login hook (popup-based, gets access_token) ─────────────────────
+  const googleLoginHook = useGoogleLogin({
+    flow: "implicit",
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await fetch(`${API}/api/auth/google`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accessToken: tokenResponse.access_token }),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || "Auth failed");
+        }
+        const data = await res.json();
+        localStorage.setItem("token", data.token);
+        setCurrentUser(data.user);
+        resolveRef.current?.(data);
+      } catch (err) {
+        rejectRef.current?.(err);
       }
-      // Default: Level 1 unlocked for new users
-      return { unlockedLevels: [1] };
-    } catch (error) {
-      console.error("Error fetching level progress:", error);
-      return { unlockedLevels: [1] };
+    },
+    onError: (err) => {
+      rejectRef.current?.(new Error(err.error_description || "Google sign-in failed"));
+    },
+  });
+
+  // Wrap hook in a Promise so components can await it
+  function signInWithGoogle() {
+    return new Promise((resolve, reject) => {
+      resolveRef.current = resolve;
+      rejectRef.current = reject;
+      googleLoginHook();
+    });
+  }
+
+  // ── Logout ─────────────────────────────────────────────────────────────────
+  function logout() {
+    localStorage.removeItem("token");
+    setCurrentUser(null);
+    setProgressCache({});
+  }
+
+  // ── Profile ────────────────────────────────────────────────────────────────
+  async function saveUserProfile(data) {
+    const res = await fetch(`${API}/api/users/profile`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeader() },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to save profile");
+    const updated = await res.json();
+    setCurrentUser(updated);
+    return updated;
+  }
+
+  // ── Progress ───────────────────────────────────────────────────────────────
+  async function getLevelProgress(missionId) {
+    if (!getToken()) return { unlockedLevels: [1], completedLevels: [] };
+
+    // Return cached progress if available to avoid 4-second latency
+    if (progressCache[missionId]) {
+      return progressCache[missionId];
+    }
+
+    try {
+      const res = await fetch(`${API}/api/progress/${missionId}`, {
+        headers: authHeader(),
+      });
+      if (!res.ok) return { unlockedLevels: [1], completedLevels: [] };
+      const data = await res.json();
+
+      // Update cache
+      setProgressCache(prev => ({ ...prev, [missionId]: data }));
+
+      return data;
+    } catch {
+      return { unlockedLevels: [1], completedLevels: [] };
     }
   }
 
   async function saveLevelProgress(missionId, completedLevel) {
-    if (!currentUser) return;
+    if (!getToken()) return;
     try {
-      const progressRef = doc(db, "users", currentUser.uid, "progress", missionId);
-      const currentProgress = await getLevelProgress(missionId);
-      const unlockedLevels = currentProgress.unlockedLevels || [1];
-      const completedLevels = currentProgress.completedLevels || [];
-
-      // Add to completed levels if not already there
-      if (!completedLevels.includes(completedLevel)) {
-        completedLevels.push(completedLevel);
-      }
-
-      // Unlock next level if not already unlocked (support up to 8 levels)
-      if (completedLevel < 8 && !unlockedLevels.includes(completedLevel + 1)) {
-        unlockedLevels.push(completedLevel + 1);
-      }
-
-      // Check if mission is complete (all 8 levels done)
-      const missionComplete = completedLevels.length >= 8;
-
-      await setDoc(progressRef, {
-        unlockedLevels,
-        completedLevels,
-        missionComplete,
-        lastPlayed: new Date().toISOString()
+      const res = await fetch(`${API}/api/progress/${missionId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeader() },
+        body: JSON.stringify({ completedLevel }),
       });
-    } catch (error) {
-      console.error("Error saving level progress:", error);
+
+      if (res.ok) {
+        const data = await res.json();
+        // Update cache proactively
+        setProgressCache(prev => ({ ...prev, [missionId]: data }));
+      }
+    } catch (err) {
+      console.error("Error saving level progress:", err);
     }
   }
 
+  // ── Boot — restore session from stored JWT ─────────────────────────────────
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-
-      if (user) {
-        // Fetch user profile if it exists
-        try {
-          const docRef = doc(db, "users", user.uid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            setUserProfile(docSnap.data());
-          } else {
-            setUserProfile(null);
-          }
-        } catch (err) {
-          console.error("Error fetching profile:", err);
-          setUserProfile(null);
-        }
-      } else {
-        setUserProfile(null);
-      }
-
+    const token = getToken();
+    if (!token) {
       setLoading(false);
-    });
-
-    return unsubscribe;
+      return;
+    }
+    fetch(`${API}/api/users/profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((user) => {
+        if (user) setCurrentUser(user);
+        else localStorage.removeItem("token");
+      })
+      .catch(() => localStorage.removeItem("token"))
+      .finally(() => setLoading(false));
   }, []);
 
   const value = {
     currentUser,
-    userProfile,
     signInWithGoogle,
     logout,
     saveUserProfile,
     getLevelProgress,
-    saveLevelProgress
+    saveLevelProgress,
   };
 
   if (loading) {

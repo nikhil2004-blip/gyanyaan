@@ -89,13 +89,7 @@ Through **8 challenging levels**, players experience the real physics, engineeri
 - **Dynamic Theming**: Planet-synchronized color schemes
 - **Custom Sound Effects**: Immersive audio feedback (optional)
 
-### 🌪️ Chaos Mode (Easter Egg)
 
-- **Toggle Chaos**: Fun mode with glitchy, retro effects
-- **Text Scrambling**: Random character replacements
-- **Visual Glitches**: RGB split, scanlines, chromatic aberration
-- **Unclickable Buttons**: Button flies across screen in chaos
-- **Perfect for Demo**: Showcases technical creativity
 
 ### 📚 Educational Content
 
@@ -381,11 +375,7 @@ npm start
 - **Mission Summary**: Detailed statistics and achievements
 - **Next Mission Unlock**: Complete Mangalyaan to unlock Chandrayaan-3
 
-### Chaos Mode Toggle
-- **Glitch Effects**: RGB split, scanlines, chromatic aberration
-- **Text Scrambling**: Random character chaos
-- **Flying Buttons**: Unclickable buttons for fun
-- **Retro Aesthetic**: VHS-style visual effects
+
 
 ### Educational Integration
 - **Real Mission Data**: Actual stats from ISRO Mangalyaan
@@ -412,9 +402,6 @@ npm start
 ### Mission Complete
 <img width="861" height="780" alt="image" src="https://github.com/user-attachments/assets/e19eb08d-5e12-460f-a2a4-ed992515c50a" />
 
-
-### Chaos Mode
-<img width="1421" height="900" alt="image" src="https://github.com/user-attachments/assets/a4af284c-b4ca-43af-aeac-253647ef20dd" />
 
 
 ---
