@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useMission } from "../context/MissionContext";
 import {
   Satellite,
   Flame,
@@ -258,6 +259,7 @@ const StatGauge = ({ label, value, unit, status = "normal", max }) => {
 };
 
 export default function Level5TMI({ onBack, onNextLevel }) {
+  const { burnFuel, advanceTime } = useMission();
   // --- State ---
   const [velocity, setVelocity] = useState(START_VELOCITY);
   const [alignment, setAlignment] = useState(0); // 0 to 100%
@@ -321,6 +323,7 @@ export default function Level5TMI({ onBack, onNextLevel }) {
 
       // Fuel Consumption
       setFuel((prev) => Math.max(0, prev - 0.4));
+      burnFuel(0.4 * 8.52); // ~852 starting fuel = roughly 3.4kg per tick
       if (fuel <= 0) {
         failMission("FUEL EXHAUSTED");
         return;
@@ -371,6 +374,7 @@ export default function Level5TMI({ onBack, onNextLevel }) {
       // Check Timing (Must be reasonably close to Perigee)
       if (isBurnWindow) {
         setMissionStatus("success");
+        advanceTime(20); // The long coast to Mars begins here. ~20 days to start.
         setTimeout(() => setShowSuccess(true), 1500);
       } else {
         failMission("TIMING ERROR");

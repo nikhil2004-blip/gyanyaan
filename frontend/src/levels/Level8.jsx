@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useMission } from "../context/MissionContext";
 import {
   Camera,
   Thermometer,
@@ -233,6 +234,7 @@ const StatBar = ({ label, value, max, color, icon: Icon, warningThreshold = 20 }
 };
 
 export default function Level8ScienceOps({ onBack, onNextLevel }) {
+  const { advanceTime } = useMission();
   // --- Modal State ---
   const [showBriefing, setShowBriefing] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -331,7 +333,10 @@ export default function Level8ScienceOps({ onBack, onNextLevel }) {
         setBuffer((b) => b - amount);
         setScore((s) => {
           const newScore = s + amount;
-          if (newScore >= GOAL_SCORE) handleWin();
+          if (newScore >= GOAL_SCORE) {
+            advanceTime(1); // 1 day passing orbit insertion/science completion
+            handleWin();
+          }
           return newScore;
         });
       } else {

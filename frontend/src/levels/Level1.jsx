@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { useMission } from "../context/MissionContext";
 import {
   Check,
   X,
@@ -330,11 +331,13 @@ export default function RocketAssembly({ onNextLevel, onBack }) {
     return selectedVehicle.thrust / totalWeight;
   }, [currentMass, selectedVehicle]);
 
+  const { fuel: missionFuel } = useMission();
+
   // 3. Calculate Range
   const range = useMemo(() => {
     const baseEfficiency = 5000;
     const totalMass = currentMass + 500;
-    const fuelMass = (fuelLevel / 100) * 1000;
+    const fuelMass = (fuelLevel / 100) * 1000; // Legacy scaling for logic logic consistency.
     if (fuelLevel === 0) return 0;
     const boosterBonus = items.strapOn ? 1.2 : 1.0;
     const calc = (fuelMass * baseEfficiency * boosterBonus) / (totalMass * 1.5);

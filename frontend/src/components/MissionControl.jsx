@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useMission } from "../context/MissionContext";
 import Level1 from "../levels/Level1";
 import Level2 from "../levels/Level2";
 import Level3 from "../levels/Level3";
@@ -19,6 +20,11 @@ const MissionControl = () => {
 
   const levelNum = parseInt(levelId, 10);
   const LevelComponent = LEVEL_COMPONENTS[levelNum];
+  const { syncWithLevel } = useMission();
+
+  React.useEffect(() => {
+    syncWithLevel(levelNum);
+  }, [levelNum]);
 
   const goToLevelSelect = () => {
     // If there is history, go back to pop the stack. Otherwise, navigate to the levels page.

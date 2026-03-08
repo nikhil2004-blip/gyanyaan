@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useMission } from "../context/MissionContext";
 import {
   Rocket,
   AlertTriangle,
@@ -271,6 +272,7 @@ const Starfield = () => (
 );
 
 export default function Level7MOI({ onBack, onNextLevel }) {
+  const { burnFuel, advanceTime } = useMission();
   // --- State ---
   // Modals
   const [showBriefing, setShowBriefing] = useState(true);
@@ -350,6 +352,7 @@ export default function Level7MOI({ onBack, onNextLevel }) {
           const efficiency = Math.cos(attitude * (Math.PI / 180));
           const oberth = Math.max(0.5, 1 - Math.abs(newDistX) / 500);
           newFuel = Math.max(0, fuel - 0.3);
+          burnFuel(0.3 * 8.52); // scale the fuel tick
           const deltaV = 0.02 * efficiency * oberth;
           newVel = Math.max(0, velocity - deltaV);
         }
@@ -434,6 +437,7 @@ export default function Level7MOI({ onBack, onNextLevel }) {
 
       // Strict Velocity Check [4.0, 4.4]
       if (velocity >= PHYSICS.MIN_SUCCESS_VEL && velocity <= PHYSICS.MAX_SUCCESS_VEL) {
+        advanceTime(1); // 1 day passing orbit insertion
         return { ...p, phase: "success" };
       } else if (velocity > PHYSICS.MAX_SUCCESS_VEL) {
         return {

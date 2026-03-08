@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useMission } from "../context/MissionContext";
 import {
   Activity,
   Radio,
@@ -249,6 +250,7 @@ const StatGauge = ({ label, value, unit, status = "normal" }) => {
 };
 
 export default function Level3OrbitInjection({ onBack, onNextLevel }) {
+  const { burnFuel, advanceTime } = useMission();
   // --- State ---
   // Modals
   const [showBriefing, setShowBriefing] = useState(true);
@@ -307,6 +309,7 @@ export default function Level3OrbitInjection({ onBack, onNextLevel }) {
       } else {
         setMissionStatus("stage_complete");
         setCurrentStageIndex((idx) => idx + 1);
+        advanceTime(1); // advance 1 day roughly per sequence
 
         // --- FORCED DRIFT LOGIC ---
         const driftDirection = Math.random() > 0.5 ? 1 : -1;
@@ -361,6 +364,7 @@ export default function Level3OrbitInjection({ onBack, onNextLevel }) {
 
       if (inWindow) {
         setFuel((f) => Math.max(0, f - FUEL_RATE));
+        burnFuel(FUEL_RATE * 5); // Burn actual kg
         setApogee((a) => a + BURN_RATE);
         setDeltaVAdded((d) => d + 0.001);
 
@@ -369,6 +373,7 @@ export default function Level3OrbitInjection({ onBack, onNextLevel }) {
         }
       } else {
         setFuel((f) => Math.max(0, f - FUEL_RATE * 0.1));
+        burnFuel(FUEL_RATE * 0.5); // Minor wastage
       }
     } else {
       if (missionStatus === "burning") {
@@ -611,7 +616,7 @@ export default function Level3OrbitInjection({ onBack, onNextLevel }) {
       )}
 
       {/* HEADER */}
-      <div className="w-full max-w-6xl flex items-center justify-between border-b-8 border-slate-800 pb-6 mb-8">
+      <div className="w-full max-w-5xl flex items-center justify-between border-b-8 border-slate-800 pb-6 mb-8">
         <div className="flex items-center gap-6">
           {onBack && (
             <button
@@ -649,7 +654,7 @@ export default function Level3OrbitInjection({ onBack, onNextLevel }) {
         </div>
       </div>
 
-      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* === LEFT: ORBIT VISUALIZER (7 cols) === */}
         <div className="lg:col-span-7 flex flex-col gap-6">
           {/* The Screen */}

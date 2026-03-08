@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useMission } from "../context/MissionContext";
 import {
   Satellite,
   Radio,
@@ -243,6 +244,7 @@ const CRTOverlay = () => (
 );
 
 export default function Level6MarsTransfer({ onBack, onNextLevel }) {
+  const { burnFuel, advanceTime } = useMission();
   // --- Game State ---
   const [hasStarted, setHasStarted] = useState(false); // New Start State
   const [progress, setProgress] = useState(0);
@@ -307,6 +309,7 @@ export default function Level6MarsTransfer({ onBack, onNextLevel }) {
           setTimeout(() => setShowSuccess(true), 1500);
           return 100;
         }
+        advanceTime(300 / (100 / CRUISE_SPEED)); // Roughly 300 days distributed over progress
         return p + CRUISE_SPEED;
       });
 
@@ -482,6 +485,7 @@ export default function Level6MarsTransfer({ onBack, onNextLevel }) {
     if (direction === "RIGHT") dx = step;
 
     setFuel((f) => Math.max(0, f - 1)); // Fuel cost
+    burnFuel(0.5); // Minimal real-world TCM cost in kg
 
     // Check with new values
     // Using current state to calculate next position
@@ -528,10 +532,12 @@ export default function Level6MarsTransfer({ onBack, onNextLevel }) {
     if (thruster === required) {
       setSpinValue(0);
       setFuel((f) => Math.max(0, f - 2));
+      burnFuel(1.0);
       setTimeout(resolveProblem, 500);
     } else {
       setMessage("WRONG THRUSTER! SPIN INCREASING.");
       setFuel((f) => Math.max(0, f - 5));
+      burnFuel(2.5);
       setSpinValue((prev) => prev * 1.5);
     }
   };

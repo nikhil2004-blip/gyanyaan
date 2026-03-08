@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import { useMission } from "../context/MissionContext";
 import {
   Check,
   X,
@@ -303,6 +304,7 @@ const ToggleSwitch = ({ label, isOn, onToggle, disabled }) => (
 
 // --- MAIN LEVEL COMPONENT ---
 export default function RocketAscentLevel2({ onNextLevel, onBack }) {
+  const { burnFuel, advanceTime } = useMission();
   // Phase: 'pre-launch' | 'countdown' | 'ascent' | 'fail' | 'success'
   const [phase, setPhase] = useState("pre-launch");
 
@@ -437,11 +439,14 @@ export default function RocketAscentLevel2({ onNextLevel, onBack }) {
       }
 
       // --- Fuel Consumption Logic ---
+      // We burn physical internal fuel for gameplay UI, but we also burn global MISSION fuel (~260,000 kg total for PSLV)
       if (newTime > 0 && newTime < 25) {
         setSolidFuel((prev) => Math.max(0, 100 - newTime * 4));
+        burnFuel(2500 * dt); // heavy liftoff burn
       }
       if (completedEvents.includes("ignite_stage2")) {
         setLiquidFuel((prev) => Math.max(0, 100 - (newTime - 28) * 0.8));
+        burnFuel(1000 * dt); // lighter upper stage burn
       }
 
       // --- Physics Balancing ---
@@ -558,6 +563,7 @@ export default function RocketAscentLevel2({ onNextLevel, onBack }) {
 
         setCompletedEvents((prev) => [...prev, ev.id]);
         addLog("FAIRING JETTISON CONFIRMED");
+        advanceTime(0.01); // advance time roughly 15 mins for launch (fraction of a day)
         setTimeout(() => setShowSuccess(true), 2000);
       } else {
         failMission("FAIRING_EARLY");

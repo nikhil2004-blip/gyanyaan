@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useMission } from "../context/MissionContext";
 import {
   Satellite,
   Play,
@@ -249,6 +250,7 @@ const ChatBubble = ({ message, type = "neutral" }) => {
 };
 
 export default function Level4OrbitRaising({ onBack, onNextLevel }) {
+  const { burnFuel, advanceTime } = useMission();
   // --- State ---
   // --- State ---
   const [stageIndex, setStageIndex] = useState(0);
@@ -359,6 +361,7 @@ export default function Level4OrbitRaising({ onBack, onNextLevel }) {
       // Burn wasted
       const cost = BURN_OPTIONS[selectedStrength].fuelCost * 0.5;
       setFuel((f) => Math.max(0, f - cost));
+      burnFuel((cost / 100) * 852); // Convert percent logic to raw mass against the MOM fuel tank
       setMessage({
         text: "Burn wasted! You fired too early/late. Only fire when the Perigee dot is glowing.",
         type: "error"
@@ -373,6 +376,8 @@ export default function Level4OrbitRaising({ onBack, onNextLevel }) {
 
       // Success Burn
       setFuel((f) => Math.max(0, f - opts.fuelCost));
+      burnFuel((opts.fuelCost / 100) * 852);
+      advanceTime(2); // approx 2 days per orbit raise
       const newApogee = apogee + opts.gain;
       setApogee(newApogee);
 
