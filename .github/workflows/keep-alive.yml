@@ -3,7 +3,7 @@ name: Keep Backend Alive
 on:
   schedule:
     # Runs every 14 minutes to prevent Render's 15-minute inactivity sleep
-    - cron: '*/14 * * * *'
+    - cron: '*/9 * * * *'
   # Allows you to trigger the ping manually from the Actions tab
   workflow_dispatch:
 
@@ -26,3 +26,4 @@ jobs:
           echo "Pinging $URL to keep alive..."
           curl -s -o /dev/null -w "%{http_code}" "$URL"
           echo -e "\nPing successful!"
+
