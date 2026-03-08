@@ -17,14 +17,11 @@ export function AuthProvider({ children }) {
   const resolveRef = useRef(null);
   const rejectRef = useRef(null);
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
-  function getToken() {
-    return localStorage.getItem("token");
-  }
-
-  function authHeader() {
-    return { Authorization: `Bearer ${getToken()}` };
-  }
+  // Default fetch options for cross-domain cookies
+  const fetchOptions = {
+    credentials: "include",
+    headers: { "Content-Type": "application/json" }
+  };
 
   // ── Google Login hook (popup-based, gets access_token) ─────────────────────
   const googleLoginHook = useGoogleLogin({
@@ -33,7 +30,7 @@ export function AuthProvider({ children }) {
       try {
         const res = await fetch(`${API}/api/auth/google`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          ...fetchOptions,
           body: JSON.stringify({ accessToken: tokenResponse.access_token }),
         });
         if (!res.ok) {
@@ -41,7 +38,6 @@ export function AuthProvider({ children }) {
           throw new Error(err.error || "Auth failed");
         }
         const data = await res.json();
-        localStorage.setItem("token", data.token);
         setCurrentUser(data.user);
         resolveRef.current?.(data);
       } catch (err) {
@@ -63,8 +59,15 @@ export function AuthProvider({ children }) {
   }
 
   // ── Logout ─────────────────────────────────────────────────────────────────
-  function logout() {
-    localStorage.removeItem("token");
+  async function logout() {
+    try {
+      await fetch(`${API}/api/auth/logout`, {
+        method: "POST",
+        ...fetchOptions,
+      });
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
     setCurrentUser(null);
     setProgressCache({});
   }
@@ -73,7 +76,7 @@ export function AuthProvider({ children }) {
   async function saveUserProfile(data) {
     const res = await fetch(`${API}/api/users/profile`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", ...authHeader() },
+      ...fetchOptions,
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to save profile");
@@ -84,7 +87,7 @@ export function AuthProvider({ children }) {
 
   // ── Progress ───────────────────────────────────────────────────────────────
   async function getLevelProgress(missionId) {
-    if (!getToken()) return { unlockedLevels: [1], completedLevels: [] };
+    if (!currentUser) return { unlockedLevels: [1], completedLevels: [] };
 
     // Return cached progress if available to avoid 4-second latency
     if (progressCache[missionId]) {
@@ -93,7 +96,8 @@ export function AuthProvider({ children }) {
 
     try {
       const res = await fetch(`${API}/api/progress/${missionId}`, {
-        headers: authHeader(),
+        method: "GET",
+        ...fetchOptions,
       });
       if (!res.ok) return { unlockedLevels: [1], completedLevels: [] };
       const data = await res.json();
@@ -108,11 +112,11 @@ export function AuthProvider({ children }) {
   }
 
   async function saveLevelProgress(missionId, completedLevel) {
-    if (!getToken()) return;
+    if (!currentUser) return;
     try {
       const res = await fetch(`${API}/api/progress/${missionId}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...authHeader() },
+        ...fetchOptions,
         body: JSON.stringify({ completedLevel }),
       });
 
@@ -126,22 +130,17 @@ export function AuthProvider({ children }) {
     }
   }
 
-  // ── Boot — restore session from stored JWT ─────────────────────────────────
+  // ── Boot — restore session from HttpOnly cookie ────────────────────────────
   useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      setLoading(false);
-      return;
-    }
     fetch(`${API}/api/users/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
+      method: "GET",
+      ...fetchOptions,
     })
       .then((r) => (r.ok ? r.json() : null))
       .then((user) => {
         if (user) setCurrentUser(user);
-        else localStorage.removeItem("token");
       })
-      .catch(() => localStorage.removeItem("token"))
+      .catch((err) => console.error("Boot session error:", err))
       .finally(() => setLoading(false));
   }, []);
 

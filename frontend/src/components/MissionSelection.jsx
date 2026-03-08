@@ -473,7 +473,8 @@ const MissionSelection = () => {
     };
 
     fetchProgress();
-  }, [currentUser, getLevelProgress]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser?.id]); // Only re-run when the user's actual ID changes, not reference identity
 
   // Check for auto-show profile from navigation state
   useEffect(() => {

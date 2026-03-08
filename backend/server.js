@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const path = require('path');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 
 const User = require('./models/User');
 const Progress = require('./models/Progress');
@@ -19,8 +20,8 @@ const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
 
 app.use(cors({
     origin: (origin, callback) => {
-        // Allow requests with no origin (curl, Postman) or any localhost port
-        if (!origin || allowedOrigins.includes(origin) || /^http:\/\/localhost:\d+$/.test(origin)) {
+        // Tight CORS: Only allowed frontend domains
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -32,6 +33,7 @@ app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 app.use(express.json());
+app.use(cookieParser());
 app.use('/assets', express.static(path.join(__dirname, 'assets'), {
     maxAge: '1y',
     immutable: true
@@ -46,11 +48,12 @@ mongoose
 
 // ─── Auth Middleware ───────────────────────────────────────────────────────────
 function authMiddleware(req, res, next) {
-    const header = req.headers.authorization;
-    if (!header || !header.startsWith('Bearer ')) {
+    const token = req.cookies.token || (req.headers.authorization && req.headers.authorization.split(' ')[1]);
+
+    if (!token) {
         return res.status(401).json({ error: 'No token provided' });
     }
-    const token = header.split(' ')[1];
+
     try {
         req.user = jwt.verify(token, process.env.JWT_SECRET);
         next();
@@ -93,11 +96,18 @@ app.post('/api/auth/google', async (req, res) => {
             { expiresIn: '7d' }
         );
 
+        // Secure HttpOnly Cookie Attachment
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
         res.json({
-            token,
             isNewUser,
             user: {
-                id: user._id,
+                id: user._id.toString(),
                 email: user.email,
                 name: user.name,
                 avatar: user.avatar,
@@ -112,6 +122,18 @@ app.post('/api/auth/google', async (req, res) => {
     }
 });
 
+// POST /api/auth/logout
+// Clears the HttpOnly cookie
+app.post('/api/auth/logout', (req, res) => {
+    res.cookie('token', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        expires: new Date(0)
+    });
+    res.json({ success: true });
+});
+
 
 
 // GET /api/users/profile
@@ -119,7 +141,16 @@ app.get('/api/users/profile', authMiddleware, async (req, res) => {
     try {
         const user = await User.findById(req.user.userId).select('-__v');
         if (!user) return res.status(404).json({ error: 'User not found' });
-        res.json(user);
+
+        res.json({
+            id: user._id.toString(),
+            email: user.email,
+            name: user.name,
+            avatar: user.avatar,
+            nickname: user.nickname,
+            age: user.age,
+            expertise: user.expertise,
+        });
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
     }
@@ -135,7 +166,16 @@ app.post('/api/users/profile', authMiddleware, async (req, res) => {
             { nickname, age, expertise },
             { new: true, runValidators: true }
         ).select('-__v');
-        res.json(user);
+
+        res.json({
+            id: user._id.toString(),
+            email: user.email,
+            name: user.name,
+            avatar: user.avatar,
+            nickname: user.nickname,
+            age: user.age,
+            expertise: user.expertise,
+        });
     } catch (err) {
         res.status(500).json({ error: 'Error saving profile' });
     }
