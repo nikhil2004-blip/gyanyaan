@@ -198,21 +198,37 @@ const LoadingScreen = ({ onLoaded }) => {
   }, [progress, onLoaded]);
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-6 text-center">
+    <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-6 text-center cursor-crosshair">
       {/* Interactive 3D Background just for Loader */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      <div className="absolute inset-0 z-0">
         <Canvas camera={{ position: [0, 0, 1] }}>
           <InteractiveLoadingBackground />
           <ambientLight intensity={0.5} />
         </Canvas>
       </div>
 
-      <div className="max-w-md w-full relative z-10">
+      <div className="max-w-md w-full relative z-10 pointer-events-none">
         {/* Animated Icon */}
-        <div className="mb-8 relative flex justify-center">
-          <Zap className="text-neonBlue animate-pulse absolute opacity-20" size={80} />
-          <Loader2 className="text-neonBlue animate-spin" size={80} strokeWidth={1} />
-          <ShieldCheck className="text-green-500 absolute bottom-0 right-[40%] translate-x-12 translate-y-2 opacity-80" size={24} />
+        <div className="mb-8 relative flex justify-center items-center w-20 h-20 mx-auto">
+          {/* Background dimmed Zap */}
+          <Zap className="text-neonBlue opacity-20 absolute" size={80} />
+
+          {/* Foreground filling Zap */}
+          <motion.div
+            className="absolute inset-0 overflow-hidden flex items-end justify-center"
+            style={{ height: `${progress}%` }}
+            initial={{ height: "0%" }}
+            animate={{ height: `${progress}%` }}
+            transition={{ ease: "linear", duration: 0.2 }}
+          >
+            {/* We place the Zap inside a container that gets clipped from the bottom up. 
+                 By forcing the inner Zap to stick to the bottom, it "fills" up. */}
+            <div className="absolute bottom-0 w-20 h-20 flex items-end justify-center">
+              <Zap className="text-neonBlue drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]" size={80} />
+            </div>
+          </motion.div>
+
+          <ShieldCheck className="text-green-500 absolute bottom-0 right-0 translate-x-4 opacity-80" size={24} />
         </div>
 
         {/* Title */}
@@ -349,16 +365,14 @@ const Hero = ({ user, onEnterMission }) => {
             style={{
               color: "white",
               textShadow: `0 0 20px ${activeTheme.accent}`,
-              transition: "text-shadow 3s ease-in-out"
             }}
           >
             {activeTheme.name}
           </span>
         </motion.p>
 
-        {/* BUTTON */}
         <motion.button
-          className={`mt-12 px-12 py-5 bg-black/30 border text-xl font-bold uppercase tracking-widest transition-all duration-[3000ms] z-20 backdrop-blur-xl`}
+          className={`mt-12 px-12 py-5 bg-black/30 border text-xl font-bold uppercase tracking-widest transition-all duration-[3000ms] z-20 backdrop-blur-xl cursor-target`}
           style={{
             borderColor: activeTheme.accent,
             color: "white",

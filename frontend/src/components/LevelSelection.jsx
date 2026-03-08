@@ -32,10 +32,10 @@ const LevelCard = ({ level, isUnlocked, isCompleted, onClick }) => (
     transition={{ delay: level.id * 0.08 }}
     className={`
       relative w-full aspect-[4/3] border-4 p-6 flex flex-col items-center justify-center
-      transition-all duration-300
+      transition-all duration-300 cursor-target
       ${isUnlocked
-        ? "bg-gradient-to-br from-slate-900/90 to-slate-800/90 border-neonBlue hover:border-white hover:shadow-[0_0_30px_rgba(0,240,255,0.4)] cursor-pointer backdrop-blur-sm"
-        : "bg-slate-900/50 border-slate-700 cursor-not-allowed backdrop-blur-sm grayscale"}
+        ? "bg-gradient-to-br from-slate-900/90 to-slate-800/90 border-neonBlue hover:border-white hover:shadow-[0_0_30px_rgba(0,240,255,0.4)] backdrop-blur-sm"
+        : "bg-slate-900/50 border-slate-700 backdrop-blur-sm grayscale"}
     `}
   >
     <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />

@@ -90,7 +90,7 @@ const MapNode = ({ level, onClick, delay, isComplete, onViewSummary }) => {
         }}
       >
         {/* PIXEL CARD CONTAINER */}
-        <button onClick={() => onClick(level)} disabled={level.locked} className="w-full">
+        <button onClick={() => onClick(level)} disabled={level.locked} className="w-full cursor-target">
           <motion.div
             whileHover={{
               scale: !level.locked ? 1.05 : 1,
@@ -187,7 +187,7 @@ const MapNode = ({ level, onClick, delay, isComplete, onViewSummary }) => {
               e.stopPropagation();
               onViewSummary(level);
             }}
-            className="mt-4 px-6 py-3 bg-green-600 hover:bg-green-500 border-2 border-green-400 text-white font-pixel text-[10px] uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] flex items-center gap-2"
+            className="mt-4 px-6 py-3 bg-green-600 hover:bg-green-500 border-2 border-green-400 text-white font-pixel text-[10px] uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] flex items-center gap-2 cursor-target"
           >
             <Award size={14} />
             VIEW MISSION SUMMARY
@@ -248,10 +248,10 @@ const MissionBriefing = ({ mission, onClose, onStart }) => {
           </div>
 
           <div className="flex justify-end space-x-4 pt-4 border-t border-white/5">
-            <TechButton variant="neutral" onClick={onClose}>
+            <TechButton variant="neutral" onClick={onClose} className="cursor-target">
               Abort
             </TechButton>
-            <TechButton variant="primary" onClick={onStart}>
+            <TechButton variant="primary" onClick={onStart} className="cursor-target">
               INITIATE MISSION
             </TechButton>
           </div>
@@ -338,7 +338,7 @@ const ProfileModal = ({ user, profile, onClose }) => {
 
           <button
             onClick={onClose}
-            className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded font-bold uppercase text-xs tracking-widest transition-colors"
+            className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded font-bold uppercase text-xs tracking-widest transition-colors cursor-target"
           >
             Close Profile
           </button>
@@ -436,7 +436,7 @@ const MissionSummaryModal = ({ mission, onClose }) => {
         <div className="p-6 border-t border-white/10 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-6 py-3 bg-green-600 hover:bg-green-500 border-2 border-green-400 text-white font-pixel text-[10px] uppercase tracking-wider transition-all"
+            className="px-6 py-3 bg-green-600 hover:bg-green-500 border-2 border-green-400 text-white font-pixel text-[10px] uppercase tracking-wider transition-all cursor-target"
           >
             CLOSE
           </button>
@@ -532,7 +532,7 @@ const MissionSelection = () => {
         <div className="flex items-center w-full md:w-auto justify-between md:justify-start space-x-4 z-20">
           <button
             onClick={() => setShowProfile(true)}
-            className="flex items-center gap-4 bg-slate-900/80 px-4 py-3 md:px-6 md:py-4 rounded-xl border-2 border-white/20 backdrop-blur-md hover:bg-slate-800/90 hover:border-neonBlue transition-all group"
+            className="flex items-center gap-4 bg-slate-900/80 px-4 py-3 md:px-6 md:py-4 rounded-xl border-2 border-white/20 backdrop-blur-md hover:bg-slate-800/90 hover:border-neonBlue transition-all group cursor-target"
           >
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-tr from-neonBlue to-purple-600 flex items-center justify-center text-sm md:text-lg font-pixel font-bold border-2 border-white/20 group-hover:scale-110 transition-transform shadow-lg">
               {userProfile?.nickname
@@ -559,7 +559,7 @@ const MissionSelection = () => {
             <TechButton
               variant="danger"
               onClick={handleLogout}
-              className="text-[10px] py-3 px-4 font-pixel border-2"
+              className="text-[10px] py-3 px-4 font-pixel border-2 cursor-target"
             >
               LOGOUT
             </TechButton>
@@ -578,7 +578,7 @@ const MissionSelection = () => {
           <TechButton
             variant="danger"
             onClick={handleLogout}
-            className="ml-4 text-xs py-4 px-8 font-pixel border-2"
+            className="ml-4 text-xs py-4 px-8 font-pixel border-2 cursor-target"
           >
             LOGOUT
           </TechButton>

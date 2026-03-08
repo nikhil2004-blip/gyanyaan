@@ -7,6 +7,7 @@ import RegisterPage from "./pages/RegisterPage";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { MissionProvider } from "./context/MissionContext";
 import GlobalMissionHud from "./components/ui/GlobalMissionHud";
+import TargetCursor from "./components/ui/TargetCursor";
 
 // ── Protected Route ──────────────────────────────────────────────────────────
 const ProtectedRoute = ({ children }) => {
@@ -17,12 +18,31 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// ── Custom Cursor Overlay ──────────────────────────────────────────────────
+const AppCursor = () => {
+  const location = useLocation();
+  // Disable the custom cursor only when inside an actual playable mission level
+  const isPlayingMission = /\/missions\/[^/]+\/levels\/.+/.test(location.pathname);
+
+  if (isPlayingMission) return null;
+
+  return (
+    <TargetCursor
+      spinDuration={2}
+      hideDefaultCursor
+      parallaxOn
+      hoverDuration={0.2}
+    />
+  );
+};
+
 // ── App ──────────────────────────────────────────────────────────────────────
 function App() {
   return (
     <AuthProvider>
       <MissionProvider>
         <Router>
+          <AppCursor />
           <GlobalMissionHud />
           <Routes>
             {/* Public */}
