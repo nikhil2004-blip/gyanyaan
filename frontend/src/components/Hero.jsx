@@ -134,38 +134,47 @@ function RotatingEarth({ onColorChange }) {
 }
 
 const InteractiveLoadingBackground = () => {
-  const starsRef = useRef();
+  const groupRef = useRef();
+  const starsLayer1 = useRef();
+  const starsLayer2 = useRef();
 
   useFrame((state, delta) => {
-    if (starsRef.current) {
-      // Base rotation
-      starsRef.current.rotation.x -= delta * 0.05;
-      starsRef.current.rotation.y += delta * 0.02;
-
+    if (groupRef.current) {
       // Interactive mouse parallax
-      // state.pointer x,y go from -1 to 1
-      const targetX = (state.pointer.x * 0.5);
-      const targetY = (state.pointer.y * 0.5);
+      const targetX = (state.pointer.x * 0.3);
+      const targetY = (state.pointer.y * 0.3);
 
       // Smoothly interpolate current rotation towards mouse target influence
-      starsRef.current.rotation.x += (targetY - starsRef.current.rotation.x) * 0.05;
-      starsRef.current.rotation.y += (targetX - starsRef.current.rotation.y) * 0.05;
+      groupRef.current.rotation.x += (targetY - groupRef.current.rotation.x) * 0.05;
+      groupRef.current.rotation.y += (targetX - groupRef.current.rotation.y) * 0.05;
+
+      // Base rotation
+      groupRef.current.rotation.z -= delta * 0.02;
+    }
+
+    const time = state.clock.elapsedTime;
+    if (starsLayer1.current) {
+      starsLayer1.current.material.transparent = true;
+      starsLayer1.current.material.opacity = Math.abs(Math.sin(time * 2.5));
+    }
+    if (starsLayer2.current) {
+      starsLayer2.current.material.transparent = true;
+      starsLayer2.current.material.opacity = Math.abs(Math.cos(time * 3.5));
     }
   });
 
   return (
-    <group>
-      <Stars
-        ref={starsRef}
-        radius={100}
-        depth={50}
-        count={10000}
-        factor={4}
-        saturation={0}
-        fade
-        speed={2}
-      />
-      <fog attach="fog" args={["#000000", 0, 150]} />
+    <group ref={groupRef}>
+      {/* Stable small background stars */}
+      <Stars radius={100} depth={50} count={6000} factor={3} saturation={0} fade speed={1} />
+
+      {/* Blinking, larger stars */}
+      <Stars ref={starsLayer1} radius={80} depth={40} count={1000} factor={7} saturation={0} fade speed={2} />
+
+      {/* Fast blinking, medium stars */}
+      <Stars ref={starsLayer2} radius={90} depth={60} count={1500} factor={5} saturation={0} fade speed={3} />
+
+      <fog attach="fog" args={["#000000", 10, 150]} />
     </group>
   );
 };
@@ -191,7 +200,7 @@ const LoadingScreen = ({ onLoaded }) => {
   return (
     <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-6 text-center">
       {/* Interactive 3D Background just for Loader */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <Canvas camera={{ position: [0, 0, 1] }}>
           <InteractiveLoadingBackground />
           <ambientLight intensity={0.5} />
