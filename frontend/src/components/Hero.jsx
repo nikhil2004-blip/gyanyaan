@@ -2,8 +2,20 @@ import { useRef, useState, useEffect, Suspense, useMemo } from "react";
 import { Canvas, useFrame, useLoader, extend } from "@react-three/fiber";
 import { motion } from "framer-motion";
 import * as THREE from "three";
-import { shaderMaterial, Html, useProgress } from "@react-three/drei";
-import { Zap, Loader2, Server, ShieldCheck } from "lucide-react";
+import { shaderMaterial, Html, useProgress, Stars } from "@react-three/drei";
+import { Zap, Loader2, Server, ShieldCheck, ChevronRight, Info } from "lucide-react";
+
+// --- ISRO Facts Database ---
+const ISRO_FACTS = [
+  "India was the first country to reach Mars on its very first attempt.",
+  "The Mars Orbiter Mission (MOM) cost ~$74 million—less than the movie 'Gravity'.",
+  "Mangalyaan completed more than 7 years in orbit, far exceeding its 6-month life.",
+  "ISRO set a world record in 2017 by launching 104 satellites in a single mission.",
+  "India's first satellite, Aryabhata, was launched in 1975.",
+  "Mangalyaan was launched using the PSLV-C25 rocket from Sriharikota.",
+  "The MOM mission distance traversed was approximately 666 million kilometers.",
+  "ISRO is currently developing Gaganyaan, India's first manned space mission."
+];
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -121,35 +133,77 @@ function RotatingEarth({ onColorChange }) {
   );
 }
 
+const InteractiveLoadingBackground = () => {
+  const starsRef = useRef();
+  useFrame((state, delta) => {
+    if (starsRef.current) {
+      starsRef.current.rotation.x -= delta * 0.05;
+      starsRef.current.rotation.y += delta * 0.02;
+    }
+  });
+
+  return (
+    <group>
+      <Stars
+        ref={starsRef}
+        radius={100}
+        depth={50}
+        count={10000}
+        factor={4}
+        saturation={0}
+        fade
+        speed={2}
+      />
+      <fog attach="fog" args={["#000000", 0, 150]} />
+    </group>
+  );
+};
+
 const LoadingScreen = ({ onLoaded }) => {
   const { progress } = useProgress();
+  const [factIndex, setFactIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFactIndex((prev) => (prev + 1) % ISRO_FACTS.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (progress === 100) {
-      // Small delay for smooth transition
-      const timer = setTimeout(() => onLoaded(true), 1000);
+      const timer = setTimeout(() => onLoaded(true), 1500);
       return () => clearTimeout(timer);
     }
   }, [progress, onLoaded]);
 
   return (
     <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-6 text-center">
-      <div className="max-w-md w-full">
+      {/* Interactive 3D Background just for Loader */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+        <Canvas camera={{ position: [0, 0, 1] }}>
+          <InteractiveLoadingBackground />
+          <ambientLight intensity={0.5} />
+        </Canvas>
+      </div>
+
+      <div className="max-w-md w-full relative z-10">
         {/* Animated Icon */}
         <div className="mb-8 relative flex justify-center">
           <Zap className="text-neonBlue animate-pulse absolute opacity-20" size={80} />
           <Loader2 className="text-neonBlue animate-spin" size={80} strokeWidth={1} />
+          <ShieldCheck className="text-green-500 absolute bottom-0 right-[40%] translate-x-12 translate-y-2 opacity-80" size={24} />
         </div>
 
         {/* Title */}
-        <h2 className="text-white font-pixel text-xs tracking-[0.3em] mb-8 leading-relaxed">
-          MISSION STARTUP INITIALIZED
+        <h2 className="text-white font-pixel text-xs tracking-[0.3em] mb-4 leading-relaxed">
+          DEEP SPACE INITIALIZATION
         </h2>
 
         {/* Progress Bar */}
-        <div className="w-full h-1 bg-slate-900 border border-slate-800 mb-4 overflow-hidden relative">
+        <div className="w-full h-1 bg-slate-900 border border-slate-800 mb-4 overflow-hidden relative shadow-[0_0_20px_rgba(0,0,0,1)]">
           <motion.div
-            className="h-full bg-neonBlue shadow-[0_0_15px_rgba(34,211,238,0.8)]"
+            className="h-full bg-neonBlue shadow-[0_0_25px_rgba(34,211,238,1)]"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.5 }}
@@ -157,26 +211,42 @@ const LoadingScreen = ({ onLoaded }) => {
         </div>
 
         {/* Details Tracking */}
-        <div className="flex justify-between items-center font-mono text-[10px] text-slate-500 mb-12">
+        <div className="flex justify-between items-center font-mono text-[10px] text-slate-500 mb-12 uppercase tracking-tighter">
           <span className="flex items-center gap-2">
-            <Server size={10} /> SYNCING TELEMETRY...
+            <Server size={10} className="animate-pulse" /> DOWNLOADING HIGH-RES TEXTURES...
           </span>
           <span className="text-neonBlue font-bold">{Math.round(progress)}%</span>
         </div>
 
+        {/* FACTS BOX */}
+        <motion.div
+          key={factIndex}
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 10 }}
+          className="mb-12 p-4 bg-slate-900/50 border border-blue-900/20 rounded backdrop-blur-sm min-h-[80px] flex items-center justify-center"
+        >
+          <div className="flex gap-3 text-left">
+            <Info size={20} className="text-amber-500 shrink-0 mt-1" />
+            <p className="text-[10px] font-mono text-slate-300 leading-relaxed italic">
+              "{ISRO_FACTS[factIndex]}"
+            </p>
+          </div>
+        </motion.div>
+
         {/* Systems Check */}
         <div className="grid grid-cols-2 gap-3">
-          <div className={`p-2 border text-[8px] font-pixel transition-colors ${progress > 25 ? 'border-neonBlue/50 text-neonBlue' : 'border-slate-800 text-slate-700'}`}>
-            ORBITER: {progress > 25 ? 'READY' : 'WAIT'}
+          <div className={`p-2 border text-[8px] font-pixel transition-colors flex items-center justify-center gap-2 ${progress > 25 ? 'border-neonBlue/50 text-neonBlue bg-neonBlue/5' : 'border-slate-800 text-slate-700'}`}>
+            {progress > 25 && <ChevronRight size={8} />} ORBITER
           </div>
-          <div className={`p-2 border text-[8px] font-pixel transition-colors ${progress > 50 ? 'border-neonBlue/50 text-neonBlue' : 'border-slate-800 text-slate-700'}`}>
-            FUEL: {progress > 50 ? 'READY' : 'WAIT'}
+          <div className={`p-2 border text-[8px] font-pixel transition-colors flex items-center justify-center gap-2 ${progress > 50 ? 'border-neonBlue/50 text-neonBlue bg-neonBlue/5' : 'border-slate-800 text-slate-700'}`}>
+            {progress > 50 && <ChevronRight size={8} />} FUEL MNG
           </div>
-          <div className={`p-2 border text-[8px] font-pixel transition-colors ${progress > 75 ? 'border-neonBlue/50 text-neonBlue' : 'border-slate-800 text-slate-700'}`}>
-            DATA: {progress > 75 ? 'READY' : 'WAIT'}
+          <div className={`p-2 border text-[8px] font-pixel transition-colors flex items-center justify-center gap-2 ${progress > 75 ? 'border-neonBlue/50 text-neonBlue bg-neonBlue/5' : 'border-slate-800 text-slate-700'}`}>
+            {progress > 75 && <ChevronRight size={8} />} TELEMETRY
           </div>
-          <div className={`p-2 border text-[8px] font-pixel transition-colors ${progress === 100 ? 'border-neonBlue/50 text-neonBlue' : 'border-slate-800 text-slate-700'}`}>
-            SYSTEM: {progress === 100 ? 'READY' : 'WAIT'}
+          <div className={`p-2 border text-[8px] font-pixel transition-colors flex items-center justify-center gap-2 ${progress === 100 ? 'border-neonBlue/50 text-neonBlue bg-neonBlue/5' : 'border-slate-800 text-slate-700'}`}>
+            {progress === 100 && <ChevronRight size={8} />} READY
           </div>
         </div>
       </div>
