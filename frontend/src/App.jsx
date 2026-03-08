@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import LandingPage from "./LandingPage";
 import MissionSelection from "./components/MissionSelection";
@@ -23,6 +24,14 @@ const AppCursor = () => {
   const location = useLocation();
   // Disable the custom cursor only when inside an actual playable mission level
   const isPlayingMission = /\/missions\/[^/]+\/levels\/.+/.test(location.pathname);
+
+  useEffect(() => {
+    if (isPlayingMission) {
+      document.body.classList.add('mission-cursor-active');
+    } else {
+      document.body.classList.remove('mission-cursor-active');
+    }
+  }, [isPlayingMission]);
 
   if (isPlayingMission) return null;
 

@@ -51,6 +51,12 @@
   }
 }
 
+/* Custom Cursor for Missions (Hollow neon blue arrow) */
+.mission-cursor-active,
+.mission-cursor-active * {
+  cursor: url('data:image/svg+xml;utf8,<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><filter id="g"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="%2322D3EE" flood-opacity="1"/></filter><path d="M6 4L22 17.5L14 19L18 26L14.5 28L10 20L4 25V4Z" stroke="%2322D3EE" stroke-width="4" stroke-linejoin="round" filter="url(%23g)"/><path d="M6 4L22 17.5L14 19L18 26L14.5 28L10 20L4 25V4Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>') 6 4, auto !important;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

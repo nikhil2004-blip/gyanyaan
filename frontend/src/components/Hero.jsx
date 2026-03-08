@@ -209,26 +209,63 @@ const LoadingScreen = ({ onLoaded }) => {
 
       <div className="max-w-md w-full relative z-10 pointer-events-none">
         {/* Animated Icon */}
-        <div className="mb-8 relative flex justify-center items-center w-20 h-20 mx-auto">
-          {/* Background dimmed Zap */}
-          <Zap className="text-neonBlue opacity-20 absolute" size={80} />
+        <div className="mb-8 relative flex justify-center items-center w-24 h-24 mx-auto">
+          <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-[0_0_15px_rgba(34,211,238,0.5)] overflow-visible">
+            <defs>
+              <clipPath id="zap-shape">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </clipPath>
+            </defs>
 
-          {/* Foreground filling Zap */}
-          <motion.div
-            className="absolute inset-0 overflow-hidden flex items-end justify-center"
-            style={{ height: `${progress}%` }}
-            initial={{ height: "0%" }}
-            animate={{ height: `${progress}%` }}
-            transition={{ ease: "linear", duration: 0.2 }}
-          >
-            {/* We place the Zap inside a container that gets clipped from the bottom up. 
-                 By forcing the inner Zap to stick to the bottom, it "fills" up. */}
-            <div className="absolute bottom-0 w-20 h-20 flex items-end justify-center">
-              <Zap className="text-neonBlue drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]" size={80} />
-            </div>
-          </motion.div>
+            {/* Background Outline */}
+            <polygon
+              points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+              fill="none"
+              stroke="#22D3EE"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+              className="opacity-20"
+            />
 
-          <ShieldCheck className="text-green-500 absolute bottom-0 right-0 translate-x-4 opacity-80" size={24} />
+            <g clipPath="url(#zap-shape)">
+              {/* The liquid container moving up. Progress goes 0 to 100. Box goes y=24 to y=-4 to comfortably fill beyond top peak. */}
+              <motion.g
+                initial={{ y: 24 }}
+                animate={{ y: 24 - (progress / 100) * 28 }}
+                transition={{ ease: "linear", duration: 0.5 }}
+              >
+                {/* Back Wave (offset phase and opacity) moving right */}
+                <motion.path
+                  d="M -24 0 Q -21 1.2 -18 0 T -12 0 T -6 0 T 0 0 T 6 0 T 12 0 T 18 0 T 24 0 T 30 0 T 36 0 T 42 0 T 48 0 L 48 30 L -24 30 Z"
+                  fill="#06b6d4" // darker cyan
+                  className="opacity-50"
+                  animate={{ x: [-12, 0] }}
+                  transition={{ repeat: Infinity, ease: "linear", duration: 1.5 }}
+                  style={{ y: -0.5 }}
+                />
+
+                {/* Front Wave moving left */}
+                <motion.path
+                  d="M -24 0 Q -21 1.2 -18 0 T -12 0 T -6 0 T 0 0 T 6 0 T 12 0 T 18 0 T 24 0 T 30 0 T 36 0 T 42 0 T 48 0 L 48 30 L -24 30 Z"
+                  fill="#22D3EE" // bright neon blue
+                  className="opacity-95"
+                  animate={{ x: [0, -12] }}
+                  transition={{ repeat: Infinity, ease: "linear", duration: 1 }}
+                />
+              </motion.g>
+            </g>
+
+            {/* Crisp Overlay Border */}
+            <polygon
+              points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+              fill="none"
+              stroke="#22D3EE"
+              strokeWidth="1"
+              strokeLinejoin="round"
+            />
+          </svg>
+
+          <ShieldCheck className="text-green-500 absolute bottom-0 right-0 translate-x-4 opacity-80 z-20" size={24} />
         </div>
 
         {/* Title */}
