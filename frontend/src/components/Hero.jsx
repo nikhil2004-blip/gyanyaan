@@ -5,6 +5,8 @@ import * as THREE from "three";
 import { shaderMaterial } from "@react-three/drei";
 import { Zap } from "lucide-react";
 
+const API = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
 // --- Custom Shader for Pixelated Transition ---
 const PixelPlanetMaterial = shaderMaterial(
   {
@@ -44,10 +46,10 @@ function RotatingEarth({ onColorChange }) {
   const materialRef = useRef();
 
   const [moon, mars, jupiter, venus] = useLoader(THREE.TextureLoader, [
-    "http://localhost:3000/assets/planets/moon.jpg",
-    "http://localhost:3000/assets/planets/mars.jpg",
-    "http://localhost:3000/assets/planets/jupyter.jpg",
-    "http://localhost:3000/assets/planets/venus.jpg"
+    `${API}/assets/planets/moon.jpg`,
+    `${API}/assets/planets/mars.jpg`,
+    `${API}/assets/planets/jupyter.jpg`,
+    `${API}/assets/planets/venus.jpg`
   ]);
 
   const textures = useMemo(() => [moon, mars, jupiter, venus], [moon, mars, jupiter, venus]);
