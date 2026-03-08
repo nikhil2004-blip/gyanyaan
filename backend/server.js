@@ -32,7 +32,10 @@ app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 app.use(express.json());
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use('/assets', express.static(path.join(__dirname, 'assets'), {
+    maxAge: '1y',
+    immutable: true
+}));
 
 
 // ─── MongoDB ───────────────────────────────────────────────────────────────────

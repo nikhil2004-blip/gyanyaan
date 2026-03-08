@@ -2,8 +2,8 @@ import { useRef, useState, useEffect, Suspense, useMemo } from "react";
 import { Canvas, useFrame, useLoader, extend } from "@react-three/fiber";
 import { motion } from "framer-motion";
 import * as THREE from "three";
-import { shaderMaterial, Html } from "@react-three/drei";
-import { Zap } from "lucide-react";
+import { shaderMaterial, Html, useProgress } from "@react-three/drei";
+import { Zap, Loader2, Server, ShieldCheck } from "lucide-react";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -121,8 +121,72 @@ function RotatingEarth({ onColorChange }) {
   );
 }
 
+const LoadingScreen = ({ onLoaded }) => {
+  const { progress } = useProgress();
+
+  useEffect(() => {
+    if (progress === 100) {
+      // Small delay for smooth transition
+      const timer = setTimeout(() => onLoaded(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [progress, onLoaded]);
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-6 text-center">
+      <div className="max-w-md w-full">
+        {/* Animated Icon */}
+        <div className="mb-8 relative flex justify-center">
+          <Zap className="text-neonBlue animate-pulse absolute opacity-20" size={80} />
+          <Loader2 className="text-neonBlue animate-spin" size={80} strokeWidth={1} />
+        </div>
+
+        {/* Title */}
+        <h2 className="text-white font-pixel text-xs tracking-[0.3em] mb-8 leading-relaxed">
+          MISSION STARTUP INITIALIZED
+        </h2>
+
+        {/* Progress Bar */}
+        <div className="w-full h-1 bg-slate-900 border border-slate-800 mb-4 overflow-hidden relative">
+          <motion.div
+            className="h-full bg-neonBlue shadow-[0_0_15px_rgba(34,211,238,0.8)]"
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.5 }}
+          />
+        </div>
+
+        {/* Details Tracking */}
+        <div className="flex justify-between items-center font-mono text-[10px] text-slate-500 mb-12">
+          <span className="flex items-center gap-2">
+            <Server size={10} /> SYNCING TELEMETRY...
+          </span>
+          <span className="text-neonBlue font-bold">{Math.round(progress)}%</span>
+        </div>
+
+        {/* Systems Check */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className={`p-2 border text-[8px] font-pixel transition-colors ${progress > 25 ? 'border-neonBlue/50 text-neonBlue' : 'border-slate-800 text-slate-700'}`}>
+            ORBITER: {progress > 25 ? 'READY' : 'WAIT'}
+          </div>
+          <div className={`p-2 border text-[8px] font-pixel transition-colors ${progress > 50 ? 'border-neonBlue/50 text-neonBlue' : 'border-slate-800 text-slate-700'}`}>
+            FUEL: {progress > 50 ? 'READY' : 'WAIT'}
+          </div>
+          <div className={`p-2 border text-[8px] font-pixel transition-colors ${progress > 75 ? 'border-neonBlue/50 text-neonBlue' : 'border-slate-800 text-slate-700'}`}>
+            DATA: {progress > 75 ? 'READY' : 'WAIT'}
+          </div>
+          <div className={`p-2 border text-[8px] font-pixel transition-colors ${progress === 100 ? 'border-neonBlue/50 text-neonBlue' : 'border-slate-800 text-slate-700'}`}>
+            SYSTEM: {progress === 100 ? 'READY' : 'WAIT'}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Hero = ({ user, onEnterMission }) => {
   const [themeIndex, setThemeIndex] = useState(0);
+  const [isAssetsLoaded, setIsAssetsLoaded] = useState(false);
 
   const planetThemes = [
     { accent: "#22D3EE", glow: "rgba(34, 211, 238, 0.8)", name: "MOON BASE" },
@@ -147,26 +211,22 @@ const Hero = ({ user, onEnterMission }) => {
         }
       `}</style>
 
+      {/* Loading Sequence */}
+      {!isAssetsLoaded && <LoadingScreen onLoaded={setIsAssetsLoaded} />}
+
       {/* 3D Background */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
+      <div className={`absolute inset-0 z-0 flex items-center justify-center transition-opacity duration-1000 ${isAssetsLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <Canvas>
           <ambientLight intensity={0.8} />
           <directionalLight position={[5, 3, 5]} intensity={3.0} color="#ffffff" />
-          <Suspense fallback={
-            <Html center>
-              <div className="flex flex-col items-center gap-4 text-white">
-                <Zap className="animate-pulse text-neonBlue" size={32} />
-                <span className="font-pixel text-[10px] tracking-widest uppercase">Initializing Telemetry...</span>
-              </div>
-            </Html>
-          }>
+          <Suspense fallback={null}>
             <RotatingEarth onColorChange={setThemeIndex} />
           </Suspense>
         </Canvas>
       </div>
 
       {/* Content Overlay */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full w-full pointer-events-auto px-4">
+      <div className={`relative z-10 flex flex-col items-center justify-center h-full w-full pointer-events-auto px-4 transition-all duration-1000 ${isAssetsLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         {/* HEADLINE */}
         <motion.h1
           className={`text-5xl md:text-8xl font-black text-white z-20 transition-all duration-[3000ms] ease-in-out`}
