@@ -5,12 +5,13 @@
 ![ISRO Mission Control](https://img.shields.io/badge/ISRO-Mission%20Control-orange?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react)
 ![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=for-the-badge&logo=vite)
-![Firebase](https://img.shields.io/badge/Firebase-10.x-FFCA28?style=for-the-badge&logo=firebase)
-
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+![NodeJS](https://img.shields.io/badge/Node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
 
 **An immersive, educational space mission simulator bringing India's Mars Orbiter Mission (Mangalyaan) to life through interactive gameplay.**
 
-[🎮 Live Demo](https://whack25deploy.vercel.app/) | [📖 Documentation](#features) | [🎥 Video Demo]()
+[🎮 Live Demo](https://whack25deploy.vercel.app/) | [📖 Documentation](#features) | [🚀 Play Now!](https://whack25deploy.vercel.app/)
 
 </div>
 
