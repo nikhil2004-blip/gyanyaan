@@ -466,11 +466,6 @@ const MissionSelection = () => {
       const mangalyaanProgress = await getLevelProgress("mangalyaan");
       const chandrayaanProgress = await getLevelProgress("chandrayaan");
 
-      console.log("📊 Mission Progress Loaded:", {
-        mangalyaan: mangalyaanProgress,
-        chandrayaan: chandrayaanProgress
-      });
-
       setMissionProgress({
         mangalyaan: mangalyaanProgress,
         chandrayaan: chandrayaanProgress
@@ -510,16 +505,9 @@ const MissionSelection = () => {
     const isComplete = progress?.missionComplete || false;
     let isLocked = MISSION_DATA[missionId].locked;
 
-    // Unlock Chandrayaan if Mangalyaan is complete
     if (missionId === "chandrayaan" && missionProgress.mangalyaan?.missionComplete) {
       isLocked = false;
     }
-
-    console.log(`🎯 Mission Status (${missionId}):`, {
-      progress,
-      isComplete,
-      isLocked
-    });
 
     return { isComplete, isLocked };
   };

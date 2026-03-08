@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const path = require('path');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
@@ -27,6 +28,7 @@ app.use(cors({
     },
     credentials: true,
 }));
+app.use(helmet());
 app.use(express.json());
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
