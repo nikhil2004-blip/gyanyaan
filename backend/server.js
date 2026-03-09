@@ -118,7 +118,7 @@ app.post('/api/auth/google', async (req, res) => {
         });
     } catch (err) {
         console.error('Auth error:', err);
-        res.status(401).json({ error: 'Authentication failed' });
+        res.status(401).json({ error: 'Authentication failed', message: err.message, name: err.name });
     }
 });
 
