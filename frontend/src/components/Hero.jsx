@@ -60,10 +60,10 @@ function RotatingEarth({ onColorChange }) {
   const [moon, mars, jupiter, venus] = useLoader(
     THREE.TextureLoader,
     [
-      `/planets/moon.jpg`,
-      `/planets/mars.jpg`,
-      `/planets/jupyter.jpg`,
-      `/planets/venus.jpg`
+      `https://ik.imagekit.io/cq4830jbe/moon.jpg`,
+      `https://ik.imagekit.io/cq4830jbe/mars.jpg`,
+      `https://ik.imagekit.io/cq4830jbe/jupyter.jpg`,
+      `https://ik.imagekit.io/cq4830jbe/venus.jpg`
     ],
     (loader) => {
       loader.setCrossOrigin("anonymous");
