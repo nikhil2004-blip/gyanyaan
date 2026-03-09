@@ -20,8 +20,8 @@ const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
 
 app.use(cors({
     origin: (origin, callback) => {
-        // Tight CORS: Only allowed frontend domains
-        if (!origin || allowedOrigins.includes(origin)) {
+        // Vercel proxy origins, or allowed explicit domains in env
+        if (!origin || origin.includes('vercel.app') || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
