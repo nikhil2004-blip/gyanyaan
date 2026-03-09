@@ -41,7 +41,7 @@ const RegisterPage = () => {
       }
     } catch (err) {
       console.error(err);
-      setError("Access denied. Signal lost.");
+      setError(err.message === 'Failed to fetch' ? "Access denied. Signal lost." : (err.message || "Access denied. Signal lost."));
     } finally {
       setLoading(false);
     }

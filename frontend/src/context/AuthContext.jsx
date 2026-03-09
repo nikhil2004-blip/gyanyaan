@@ -27,20 +27,27 @@ export function AuthProvider({ children }) {
   const googleLoginHook = useGoogleLogin({
     flow: "implicit",
     onSuccess: async (tokenResponse) => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s backend timeout
+
       try {
         const res = await fetch(`${API}/api/auth/google`, {
           method: "POST",
           ...fetchOptions,
+          signal: controller.signal,
           body: JSON.stringify({ accessToken: tokenResponse.access_token }),
         });
+        clearTimeout(timeoutId);
+
         if (!res.ok) {
           const err = await res.json();
-          throw new Error(err.error || "Auth failed");
+          throw new Error(err.message || err.error || "Auth failed");
         }
         const data = await res.json();
         setCurrentUser(data.user);
         resolveRef.current?.(data);
       } catch (err) {
+        clearTimeout(timeoutId);
         rejectRef.current?.(err);
       }
     },
