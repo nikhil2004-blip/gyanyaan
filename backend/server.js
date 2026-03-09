@@ -230,5 +230,9 @@ app.post('/api/progress/:missionId', authMiddleware, async (req, res) => {
     }
 });
 
-// ─── Start ─────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => console.log(`Backend server running at http://localhost:${PORT}`));
+// ─── Start or Export ───────────────────────────────────────────────────────────
+if (process.env.NODE_ENV !== 'production' || process.env.VERCEL_DEV) {
+    app.listen(PORT, () => console.log(`Backend server running at http://localhost:${PORT}`));
+}
+
+module.exports = app;
