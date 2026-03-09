@@ -1,3 +1,7 @@
+const express = require('express');
+const router = express.Router();
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 const connectDB = require('../db');
 
 // Utility for fetch with timeout
