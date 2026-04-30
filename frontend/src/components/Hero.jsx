@@ -17,8 +17,6 @@ const ISRO_FACTS = [
   "ISRO is currently developing Gaganyaan, India's first manned space mission."
 ];
 
-const API = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? "" : "http://localhost:3000");
-
 // --- Custom Shader for Pixelated Transition ---
 const PixelPlanetMaterial = shaderMaterial(
   {

@@ -2,7 +2,28 @@ import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 
 const AuthContext = createContext();
-const API = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? "" : "http://localhost:3000");
+
+function resolveApiBase() {
+  const configuredBase = import.meta.env.VITE_API_URL?.trim();
+
+  if (configuredBase) {
+    const isLocalhostBase = /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?(\/.*)?$/i.test(configuredBase);
+
+    if (import.meta.env.PROD && isLocalhostBase && typeof window !== "undefined") {
+      return window.location.origin;
+    }
+
+    return configuredBase.replace(/\/$/, "");
+  }
+
+  if (import.meta.env.PROD && typeof window !== "undefined") {
+    return window.location.origin;
+  }
+
+  return "http://localhost:3000";
+}
+
+const API = resolveApiBase();
 
 export function useAuth() {
   return useContext(AuthContext);
