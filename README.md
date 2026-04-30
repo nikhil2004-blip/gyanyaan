@@ -1,4 +1,4 @@
-<img width="1911" height="903" alt="image" src="https://github.com/user-attachments/assets/89ea36a2-8b0a-4815-b200-644a04700b90" /># 🚀 ISRO Mission Simulator - Gyanyaan 1.0
+<img width="1911" height="903" alt="image" src="https://github.com/user-attachments/assets/89ea36a2-8b0a-4815-b200-644a04700b90" /># 🚀 ISRO Mission Simulator - Gyanyaan 1.1
 
 <div align="center">
 
