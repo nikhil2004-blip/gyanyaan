@@ -73,3 +73,6 @@ secrets/
 *.pem
 *.key
 *.cert
+
+.vercel
+.env*.local
