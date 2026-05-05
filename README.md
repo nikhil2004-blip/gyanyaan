@@ -4,32 +4,35 @@
 
 <div align="center">
 
-<span style="display:inline-block;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:999px;padding:6px 12px;margin:4px;font-size:12px;font-weight:600;">Game</span>
-<span style="display:inline-block;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:999px;padding:6px 12px;margin:4px;font-size:12px;font-weight:600;">MIT License</span>
-<span style="display:inline-block;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:999px;padding:6px 12px;margin:4px;font-size:12px;font-weight:600;">Educational</span>
-<span style="display:inline-block;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:999px;padding:6px 12px;margin:4px;font-size:12px;font-weight:600;">Space Simulator</span>
-<span style="display:inline-block;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:999px;padding:6px 12px;margin:4px;font-size:12px;font-weight:600;">Cloudinary</span>
-<span style="display:inline-block;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:999px;padding:6px 12px;margin:4px;font-size:12px;font-weight:600;">React</span>
+![Game](https://img.shields.io/badge/Game-1f2937?style=for-the-badge)
+![MIT License](https://img.shields.io/badge/MIT%20License-1f2937?style=for-the-badge)
+![Educational](https://img.shields.io/badge/Educational-1f2937?style=for-the-badge)
+![Space Simulator](https://img.shields.io/badge/Space%20Simulator-1f2937?style=for-the-badge)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-1f2937?style=for-the-badge)
+![React](https://img.shields.io/badge/React-1f2937?style=for-the-badge)
 
 </div>
 
 An educational space mission simulator inspired by India's Mars Orbiter Mission (Mangalyaan). Gyanyaan turns spaceflight concepts into a guided, mission-style experience focused on learning, progression, and presentation.
 
-[Live Demo](https://gyanyaan.nikstu.tech/) | [Website](https://gyanyaan.nikstu.tech/)
+[Live Demo](https://gyanyaan.nikstu.tech/)
 
 ---
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [Game Levels](#game-levels)
-- [Tech Stack](#tech-stack)
-- [Screenshots](#screenshots)
-- [License](#license)
-- [Team](#team)
-- [Acknowledgments](#acknowledgments)
-- [Contact](#contact)
+<div align="center">
+
+[![Overview](https://img.shields.io/badge/Overview-1f2937?style=for-the-badge)](#overview)
+[![Features](https://img.shields.io/badge/Features-1f2937?style=for-the-badge)](#features)
+[![Game Levels](https://img.shields.io/badge/Game_Levels-1f2937?style=for-the-badge)](#game-levels)
+[![Tech Stack](https://img.shields.io/badge/Tech_Stack-1f2937?style=for-the-badge)](#tech-stack)
+[![Screenshots](https://img.shields.io/badge/Screenshots-1f2937?style=for-the-badge)](#screenshots)
+[![License](https://img.shields.io/badge/License-1f2937?style=for-the-badge)](#license)
+[![Team](https://img.shields.io/badge/Team-1f2937?style=for-the-badge)](#team)
+[![Contact](https://img.shields.io/badge/Contact-1f2937?style=for-the-badge)](#contact)
+
+</div>
 
 ---
 
