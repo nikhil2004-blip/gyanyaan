@@ -2,9 +2,18 @@
 
 <img width="1911" height="903" alt="Mission Simulator preview" src="https://github.com/user-attachments/assets/89ea36a2-8b0a-4815-b200-644a04700b90" />
 
-An educational space mission simulator inspired by India's Mars Orbiter Mission (Mangalyaan). Gyanyaan turns spaceflight concepts into a guided, mission-style experience focused on learning, progression, and presentation.
+<div align="center">
 
-**Status**: MIT licensed
+<span style="display:inline-block;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:999px;padding:6px 12px;margin:4px;font-size:12px;font-weight:600;">Game</span>
+<span style="display:inline-block;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:999px;padding:6px 12px;margin:4px;font-size:12px;font-weight:600;">MIT License</span>
+<span style="display:inline-block;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:999px;padding:6px 12px;margin:4px;font-size:12px;font-weight:600;">Educational</span>
+<span style="display:inline-block;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:999px;padding:6px 12px;margin:4px;font-size:12px;font-weight:600;">Space Simulator</span>
+<span style="display:inline-block;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:999px;padding:6px 12px;margin:4px;font-size:12px;font-weight:600;">Cloudinary</span>
+<span style="display:inline-block;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:999px;padding:6px 12px;margin:4px;font-size:12px;font-weight:600;">React</span>
+
+</div>
+
+An educational space mission simulator inspired by India's Mars Orbiter Mission (Mangalyaan). Gyanyaan turns spaceflight concepts into a guided, mission-style experience focused on learning, progression, and presentation.
 
 [Live Demo](https://gyanyaan.nikstu.tech/) | [Website](https://gyanyaan.nikstu.tech/)
 
