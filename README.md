@@ -1,4 +1,4 @@
-# ISRO Mission Simulator - Gyanyaan
+# ISRO Missions Simulator - Gyanyaan
 
 <img width="1911" height="903" alt="Mission Simulator preview" src="https://github.com/user-attachments/assets/89ea36a2-8b0a-4815-b200-644a04700b90" />
 
